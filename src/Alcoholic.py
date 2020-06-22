@@ -1,5 +1,5 @@
 import datetime
-from Utility import clip
+from src.Utility import clip
 
 class Alcoholic:
     def __init__(self):

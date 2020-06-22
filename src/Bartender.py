@@ -2,9 +2,9 @@ import datetime
 import random
 from math import ceil
 
-import Constants
-import Utility
-from Alcoholic import Alcoholic
+import src.Constants as Constants
+import src.Utility as Utility
+from src.Alcoholic import Alcoholic
 
 
 class Bartender:

@@ -7,10 +7,10 @@ from math import ceil
 import discord
 import validators
 
-import Constants
-import Utility
-from Alcoholic import Alcoholic
-from Bartender import Bartender
+import src.Constants as Constants
+import src.Utility as Utility
+from src.Alcoholic import Alcoholic
+from src.Bartender import Bartender
 
 client = discord.Client()
 

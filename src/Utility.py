@@ -1,4 +1,4 @@
-import Constants
+import src.Constants as Constants
 import discord
 
 #Проверяет юзера на наличие админских прав
