@@ -20,13 +20,13 @@ heads = ['1Head', '2Head', '3Head', '4Head', '5Head', '6Head', 'fakeHead']
 
 # Гачи функционал: список ссылок на ютуб видео, которые можно пополнять через дискорд и получать рандомную ссылку по запросу.
 #TODO: На данный момент ссылки хранятся в .csv файле и подгружаются в сет gachi при запуске программы. Надо бы перенести их в базу данных 
-gachi = set()
+gachi = []
 
 # Добавляет ссылку в сет gachi и .csv файл. Возвращает True если ссылки не было до этого в листе, и была добавлена
 def add_gachi(link):
     global gachi
     if link not in gachi:
-        gachi.add(link)
+        gachi.append(link)
         with open('Гачи.csv', 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([link,])
@@ -66,7 +66,7 @@ async def on_ready():
     with open('Гачи.csv', newline='') as gachi_file:
         gachi_reader = csv.reader(gachi_file)
         for row in gachi_reader:
-            gachi.add(row[0])
+            gachi.append(row[0])
      
 # Реакция на присоединение юзера к серверу
 @client.event
@@ -218,9 +218,22 @@ async def on_message(message):
             else:
                 await bartender.give_drink(message.author, message.channel) 
 
+    if message.content == '!угостить барную стойку':
+        if message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now():
+            await message.channel.send(f'Пациент начинает буянить! {Utility.emote("durka")}')
+            return
+        voice_channel = discord.utils.get(Constants.GUILD.voice_channels, name='Ещё на барных стульях')
+        for user in voice_channel.members:
+            if user is not message.author:
+                if user.id in durka.keys() and durka[user.id].timeout_untill > datetime.datetime.now():
+                    await message.channel.send(f'{user.mention}, Вам {Utility.gender(message.author, "передал", "передала")} успокоительное ' +\
+                        f'{Utility.gender(message.author, "Ваш вымышленный друг", "Ваша вымышленная подруга")} {message.author.mention} {Utility.emote("durka")}')
+                else:
+                    await bartender.give_drink(user, message.channel, gift_giver=message.author)
+
     # !угостить (@юзер [напиток]) - наливает юзеру напиток
     # если напиток не указан, наливает рандомный напиток
-    if message.content.startswith('!угостить'):
+    elif message.content.startswith('!угостить'):
         if len(message.content.split()) > 1:
             try:
                 user = discord.utils.get(message.guild.members, id=Utility.get_id(message.content.split()[1]))
@@ -465,7 +478,7 @@ async def on_message(message):
         if message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now():
             await message.channel.send(f'альпакА {Utility.emote("durka")}')
         else:
-            await message.channel.send({Utility.emote("alpaka")})
+            await message.channel.send(Utility.emote("alpaka"))
             await message.channel.send(f'{Utility.emote("Pepega")} 📣 альпакА')
 
 
@@ -477,7 +490,7 @@ async def on_message(message):
             await message.channel.send(f'Ты что, хочешь чтобы было как на Украине? {Utility.emote("durka")}')
             return
         if message.author.id in Constants.UKR_IDs:
-            await message.channel.send({Utility.emote("3Head")} + " " + {Utility.emote("UKR")})
+            await message.channel.send(Utility.emote("3Head") + " " + Utility.emote("UKR"))
         else:
             await message.channel.send('Вийди отсюда, розбiйник! Плохо чуеш мене?')
 
