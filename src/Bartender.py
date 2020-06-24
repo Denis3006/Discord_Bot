@@ -85,7 +85,9 @@ class Bartender:
         await channel.send(f'{user.mention}{random.choice(self.thanks_replies)}')
 
     # наливает напиток юзеру (меняет степень опьянения; даёт таймаут, если степень опьянения >=100; выдаёт реплику)
-    async def give_drink(self, user, channel, drink=None, gift_giver=None, give_compliment=(random.randrange(10) == 0)):
+    async def give_drink(self, user, channel, drink=None, gift_giver=None, give_compliment=None):
+        if give_compliment is None:
+            give_compliment = (random.randrange(10) == 0)
         if user.id not in self.alcoholics.keys():
             self.alcoholics[user.id] = Alcoholic()
         elif self.alcoholics[user.id].alco_test() == 0:
