@@ -103,7 +103,7 @@ class Bartender:
             return
 
         if user.id == Constants.TGEU_ID and self.special and gift_giver is None and random_drink:  # peepoClown ивент
-            self.alcoholics[user.id].alco_percent = self.alcoholics[user.id].aclo_test() + 5
+            self.alcoholics[user.id].alco_percent = self.alcoholics[user.id].alco_test() + 5
             self.alcoholics[user.id].recovered_percent = 0
             self.alcoholics[user.id].last_drink_time = datetime.datetime.now()
             self.alcoholics[user.id].alco_percent = Utility.clip(self.alcoholics[user.id].alco_percent, 0, 100)
@@ -112,7 +112,7 @@ class Bartender:
             
         success = random.randrange(50) != 0  # шанс на успех команды
         if success:
-            self.alcoholics[user.id].alco_percent = self.alcoholics[user.id].aclo_test() + drink[1]
+            self.alcoholics[user.id].alco_percent = self.alcoholics[user.id].alco_test() + drink[1]
             self.alcoholics[user.id].recovered_percent = 0
             self.alcoholics[user.id].last_drink_time = datetime.datetime.now()
             self.alcoholics[user.id].alco_percent = Utility.clip(self.alcoholics[user.id].alco_percent, 0, 100)
