@@ -5,3 +5,4 @@ validators
 lxml
 python-dotenv
 psycopg2
+emojis

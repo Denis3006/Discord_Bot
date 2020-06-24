@@ -256,11 +256,11 @@ async def on_message(message):
             if message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now():
                 if user.id in durka.keys():
                     # автор и юзер в дурке
-                    await message.channel.send(f'{user.mention}, Вас {Utility.gender(message.author, "угостил", "угостила")} {message.author.mention}! Держите, Ваши антидепрессанты {Utility.emote("durka")}')
+                    await message.channel.send(f'{user.mention}, Вас {Utility.gender(message.author, "угостил", "угостила")} {message.author.mention}! Держите, Ваши антидепрессанты {Utility.emote("pill")} {Utility.emote("durka")}')
                     return
                 else:
                     # только автор в дурке
-                    await message.channel.send(f'{user.mention}, Вам передачка из дурки! {message.author.mention} {Utility.gender(message.author, "угостил", "угостила")} Вас непонятными таблетками {Utility.emote("durka")}')
+                    await message.channel.send(f'{user.mention}, Вам передачка из дурки! {message.author.mention} {Utility.gender(message.author, "угостил", "угостила")} Вас непонятными таблетками {Utility.emote("pill")} {Utility.emote("durka")}')
                     return
 
             if user.id in durka.keys() and durka[user.id].timeout_untill > datetime.datetime.now():
@@ -312,7 +312,7 @@ async def on_message(message):
                 bartender.alcoholics[user.id].hangover = False
                 bartender.alcoholics[user.id].timeout_untill = datetime.datetime.now() - datetime.timedelta(hours=1)
                 if user is message.author:
-                    await message.channel.send(f'{user.mention} принял анальгина и протрезвел \U0001F48A')
+                    await message.channel.send(f'{user.mention} принял анальгина и протрезвел {Utility.emote("pill")}')
                 else:
                     await message.channel.send(f'{message.author.mention} дал {user.mention} анальгина, и {Utility.gender(user, "тот протрезвел.", "та протрезвела.")}')
             else:  # админских прав нет

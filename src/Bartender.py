@@ -6,7 +6,6 @@ import src.Constants as Constants
 import src.Utility as Utility
 from src.Alcoholic import Alcoholic
 
-
 class Bartender:
     def __init__(self):
         self.alcoholics = dict()  # словарь юзеров в баре
@@ -14,9 +13,9 @@ class Bartender:
         self.drinks = {  # словарь напитков в баре формата "название: (реплика, алко)", где алко - степень опьянения от напитка
             'спирт':                (f', порция чистого спирта {Utility.emote("Pepega")} \nНадеюсь ты не помрёшь {Utility.emote("LULW")}', 50),
             'водка':                (f', Ваша водка {Utility.emote("PepeHappy")}', 20),
-            'виски':                (f', Ваш виски {Utility.emote("PepeHappy")} \U0001F943', 20),
-            'ром':                  (f', Ваш ром {Utility.emote("PepeHappy")} \U0001F943', 20),
-            'коньяк':               (f', Ваш коньячок {Utility.emote("PepeHappy")} \U0001F943', 20),
+            'виски':                (f', Ваш виски {Utility.emote("PepeHappy")} {Utility.emote("tumbler_glass")}', 20),
+            'ром':                  (f', Ваш ром {Utility.emote("PepeHappy")} {Utility.emote("tumbler_glass")}', 20),
+            'коньяк':               (f', Ваш коньячок {Utility.emote("PepeHappy")} {Utility.emote("tumbler_glass")}', 20),
             'виски кола':           (f', Ваш коктейль "Виски кола" {Utility.emote("PepeHappy")}', 16),
             'ром кола':             (f', Ваш коктейль "Ром кола" {Utility.emote("PepeHappy")}', 16),
             'джин тоник':           (f', Ваш коктейль "Джин тоник" {Utility.emote("PepeHappy")}', 14),
@@ -31,14 +30,14 @@ class Bartender:
             'егерь-энерджи':        (f', Ваш коктейль "Егерь-энерджи" {Utility.emote("PepeHappy")}', 16),
             'лонг айленд':          (f', Ваш коктейль "Лонг Айленд" {Utility.emote("PepeHappy")}', 14),
             'мохито':               (f', Ваш коктейль "Мохито" {Utility.emote("PepeHappy")}', 15),
-            'портвейн':             (f', Ваш Портвейн 777 {Utility.emote("PepeHappy")} \U0001F943', 7),
-            'красное вино':         (f', Ваш бокал красного винишка {Utility.emote("PepeHappy")} \U0001F377', 6),
+            'портвейн':             (f', Ваш Портвейн 777 {Utility.emote("PepeHappy")} {Utility.emote("tumbler_glass")}', 7),
+            'красное вино':         (f', Ваш бокал красного винишка {Utility.emote("PepeHappy")} {Utility.emote("wine_glass")}', 6),
             'белое вино':           (f', Ваш бокал белого винишка {Utility.emote("PepeHappy")}', 6),
             'розовое вино':         (f', Ваш бокал розового чилийского винишка {Utility.emote("PepeHappy")}', 6),
-            'шампанское':           (f', Ваш шампусик {Utility.emote("PepeHappy")} \U0001F942', 5),
+            'шампанское':           (f', Ваш шампусик {Utility.emote("PepeHappy")} {Utility.emote("champagne_glass")}', 5),
             'сидр':                 (f', Ваш сидр {Utility.emote("PepeHappy")}', 5),
-            'пиво':                 (f', Ваш пивасик {Utility.emote("PepeHappy")} \U0001F37A', 5),
-            'водичка':              (f', Ваша водичка \U0001F964 На сегодня хватит {Utility.emote("monkaSpolice")}', -10),
+            'пиво':                 (f', Ваш пивасик {Utility.emote("PepeHappy")} {Utility.emote("beer")}', 5),
+            'водичка':              (f', Ваша водичка {Utility.emote("cup_with_straw")} На сегодня хватит {Utility.emote("monkaSpolice")}', -10),
             'квас':                 (f', Ваш холодный квас {Utility.emote("MHM")}', 1),
             'мадера':               (f', Ваше португальское крепленое вино мадера c кусочком кекса в прикуску! {Utility.emote("pepeOK")}', 10),
             'херес':                (f', Ваш испанский херес! Почувствуйте эти сладкие нотки винограда', 10),
@@ -54,7 +53,7 @@ class Bartender:
             'баунти мартини':       (f', Ваш баунти мартини! По сути, клубнично-кокосовый милкшейк, вкусно и легко', 9),
             'греческая смоковница': (f', Ваша смоковница с инжиром! Выпиваешь шот, затем закусываешь инжиром - ничего сложного!', 19),
             'россини':              (f', Ваш россини! Легкий коктейль из клубничной пюрешки и просекко {Utility.emote("strawberry")}', 12),
-            'вода':                 (f', Ваша вода \U0001F964', -10),
+            'вода':                 (f', Ваша вода {Utility.emote("cup_with_straw")}', -10),
             'энергетик':            (f', Ваш энергетик! {Utility.emote("PepeKMS")} \nНе спать! {Utility.emote("pepeRage")}', 0) 
             }
 
