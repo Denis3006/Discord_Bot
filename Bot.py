@@ -137,7 +137,7 @@ async def on_message(message):
                     [f'{message.author.mention}, выглядишь на все :100: {Utility.emote("MonkaChrist")}', \
                     f'{message.author.mention}, ты {Utility.gender(message.author, "пьян", "пьяна")} на 100% {Utility.emote("Pepechill")} \nИди проспись! {Utility.emote("MHM")}']))
             else:
-                await message.channel.send(f'{message.author.mention}, ты  {Utility.gender(message.author, "пьян", "пьяна")} на {bartender.alcoholics[message.author.id].alco_test()}% {Utility.emote("Pepechill")}')
+                await message.channel.send(f'{message.author.mention}, ты {Utility.gender(message.author, "пьян", "пьяна")} на {bartender.alcoholics[message.author.id].alco_test()}% {Utility.emote("Pepechill")}')
 
     # !алко [new_alco [@юзер]] - меняет степень опьянения юзера на new_aclo
     # если юзер не указан, действует на автора сообщения
@@ -282,7 +282,7 @@ async def on_message(message):
                 else:
                     await bartender.give_drink(user, message.channel, drink, gift_giver=message.author)
             if message.content.split()[1] == Utility.emote('YROD'):
-                await message.channel.send(f'{user.mention}, какой же ты урод! {Utility.emote("YROD")}')
+                await message.channel.send(f'{user.mention}, ебать ты урод! {Utility.emote("YROD")}')
         else:
             await message.channel.send(f'{message.author.mention}, кого угощать собрались? {Utility.emote("CoolStoryBob")}')
 
