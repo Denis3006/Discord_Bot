@@ -71,7 +71,7 @@ class Bartender:
         await channel.send(f'{user.mention}{random.choice(self.thanks_replies)}')
 
     # наливает напиток юзеру (меняет степень опьянения; даёт таймаут, если степень опьянения >=100; выдаёт реплику)
-    async def give_drink(self, user, channel, drink=None, gift_giver=None):
+    async def give_drink(self, user, channel, drink=None, gift_giver=None, give_compliment=(random.randrange(10) == 0)):
         if user.id not in self.alcoholics.keys():
             self.alcoholics[user.id] = Alcoholic()
         elif self.alcoholics[user.id].alco_test() == 0:
@@ -103,7 +103,8 @@ class Bartender:
             return
 
         if user.id == Constants.TGEU_ID and self.special and gift_giver is None and random_drink:  # peepoClown ивент
-            self.alcoholics[user.id].alco_percent += 5
+            self.alcoholics[user.id].alco_percent = self.alcoholics[user.id].aclo_test() + 5
+            self.alcoholics[user.id].recovered_percent = 0
             self.alcoholics[user.id].last_drink_time = datetime.datetime.now()
             self.alcoholics[user.id].alco_percent = Utility.clip(self.alcoholics[user.id].alco_percent, 0, 100)
             await channel.send(f'Пожалуйста, {user.mention}, Ваш тёплый Хугарден {Utility.emote("pepeClown")}')
@@ -111,7 +112,8 @@ class Bartender:
             
         success = random.randrange(50) != 0  # шанс на успех команды
         if success:
-            self.alcoholics[user.id].alco_percent += drink[1]
+            self.alcoholics[user.id].alco_percent = self.alcoholics[user.id].aclo_test() + drink[1]
+            self.alcoholics[user.id].recovered_percent = 0
             self.alcoholics[user.id].last_drink_time = datetime.datetime.now()
             self.alcoholics[user.id].alco_percent = Utility.clip(self.alcoholics[user.id].alco_percent, 0, 100)
 
@@ -136,7 +138,7 @@ class Bartender:
                 else:
                     await channel.send(f'Пожалуйста, {user.mention}{drink[0]}')
         
-        if random.randrange(10) == 0:  # шанс на комплимент
+        if give_compliment:  # шанс на комплимент
             compliment_nr = random.randrange(len(self.compliments))
             if Constants.FEMALE_ROLE in user.roles:
                 compliment = self.compliments[compliment_nr][1]

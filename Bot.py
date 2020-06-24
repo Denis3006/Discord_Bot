@@ -238,7 +238,10 @@ async def on_message(message):
             try:
                 user = discord.utils.get(message.guild.members, id=Utility.get_id(message.content.split()[1]))
             except ValueError:
-                user = None
+                if message.content.split()[1] == Utility.emote('YROD'):
+                    user = discord.utils.get(Constants.GUILD.members, id=Constants.HACKERMAN_ID)
+                else:
+                    user = None
             if user is None:
                 if message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now():
                     # автор в дурке и юзер не найден
@@ -268,10 +271,18 @@ async def on_message(message):
                 return
 
             if len(message.content.split()) == 2: # рандомный напиток, не указан в сообщении
-                await bartender.give_drink(user, message.channel, gift_giver=message.author) 
+                if message.content.split()[1] == Utility.emote('YROD'):
+                    await bartender.give_drink(user, message.channel, gift_giver=message.author, give_compliment=False)
+                else:
+                    await bartender.give_drink(user, message.channel, gift_giver=message.author) 
             else:  # напиток указан в сообщении
                 drink = ' '.join(message.content.split()[2:])  # название напитка
-                await bartender.give_drink(user, message.channel, drink, gift_giver=message.author)
+                if message.content.split()[1] == Utility.emote('YROD'):
+                    await bartender.give_drink(user, message.channel, gift_giver=message.author, give_compliment=False)
+                else:
+                    await bartender.give_drink(user, message.channel, drink, gift_giver=message.author)
+            if message.content.split()[1] == Utility.emote('YROD'):
+                await message.channel.send(f'{user.mention}, какой же ты урод! {Utility.emote("YROD")}')
         else:
             await message.channel.send(f'{message.author.mention}, кого угощать собрались? {Utility.emote("CoolStoryBob")}')
 
