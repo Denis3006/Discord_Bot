@@ -491,14 +491,15 @@ async def on_message(message):
 
     # !буянить - юзер начинает буянить
     # Бот в зависимости от ситуации действует
-
+    
     if message.content == '!буянить':
         if message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now():
             await message.channel.send(f'На вас надета смирительная рубашка, вы не сможете навредить {Utility.emote("durka")}')
         else:
             members = []
             for member in message.guild.members:
-                if member.id != message.author.id and not (message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now()):
+                in_durka = (member.id in durka.keys() and durka[member.id].timeout_untill > datetime.datetime.now())
+                if member.status is discord.Status.online and member.id != message.author.id and not in_durka:
                     members.append(member)
             await bartender.rage(message.author, random.choice(members), message.channel)
 
