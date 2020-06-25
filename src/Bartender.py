@@ -114,7 +114,7 @@ class Bartender:
             ' затевает драку с {} и проигрывает',
             ' выплескивает ближайший напиток в {}',
             ' плюет {} в лицо',
-            ' отнимает напиток у {} и выпивает его залпом',
+            ' отнимает {} у {} и выпивает этот напиток залпом.',
             ' берет бутылку в руки и делает из неё розочку. {} в опасности',
             ' начинает громко орать на {}',
             ' начинает спорить с {}',
@@ -127,7 +127,7 @@ class Bartender:
 
     # Юзер начинает буянить в баре
     async def rage(self, user, channel, rage_to):
-        if rage_to.id == ZAKHOZHKA_ID:
+        if rage_to.id == Constants.ZAKHOZHKA_ID:
             await channel.send(f"{rage_to.mention} получает ладошкой по лбу от {user.mention}")
             return
         if user.id not in self.alcoholics.keys():
@@ -136,9 +136,15 @@ class Bartender:
             await channel.send(f"{user.mention}, ты слишком пьян для этого, проспись!")
         elif self.alcoholics[user.id].alco_test() >= 50:
             action = random.choice(self.rage_replies)
-            await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
+            if action == self.rage_replies[6]:
+                drink_name = random.choice(list(self.random_drinks.keys()))
+                drink = self.random_drinks[drink_name]
+                self.alcoholics[user.id].alco_percent += drink[1]
+                await channel.send(f'{user.mention}{action}'.format(drink_name, rage_to.mention))
+            else:
+                await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
         else:
-            await channel.send(f"Вы же не настолько пьяны, чтобы делать это? {Utility.emote('monkaSpolice')}")
+            await channel.send(f'Вы же не настолько пьяны, чтобы делать это? {Utility.emote("monkaSpolice")}')
 
 
     # наливает напиток юзеру (меняет степень опьянения; даёт таймаут, если степень опьянения >=100; выдаёт реплику)
@@ -155,7 +161,7 @@ class Bartender:
         if self.alcoholics[user.id].timeout_untill > datetime.datetime.now():  # таймаут уже есть
             minutes_left = ceil((self.alcoholics[user.id].timeout_untill - datetime.datetime.now()).total_seconds() / 60)
             if gift_giver is not None:
-                await channel.send(f'{gift_giver.mention}, не трогай {user.mention}, ' + Utility.gender(user, 'ему', 'ей') + f' бы проспаться. {Utility.emote("Pepechill")} Попробуй угостить через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
+                await channel.send(f'{gift_giver.mention}, не трогай {user.mention}, {Utility.gender(user, "ему", "ей")} бы проспаться. {Utility.emote("Pepechill")} Попробуй угостить через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
             else:
                 await channel.send(f'{user.mention}, тебе бы проспаться. {Utility.emote("Pepechill")} Приходи через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
             return
