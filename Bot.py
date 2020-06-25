@@ -493,10 +493,14 @@ async def on_message(message):
     # Бот в зависимости от ситуации действует
 
     if message.content == '!буянить':
-        if message.author.id in durka.keys():
+        if message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now():
             await message.channel.send(f'На вас надета смирительная рубашка, вы не сможете навредить {Utility.emote("durka")}')
         else:
-            await bartender.rage(message.author, message.channel, message.guild.members)
+            members = []
+            for member in message.guild.members:
+                if member.id != user.id and not (message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now()):
+                    members.append(member)
+            await bartender.rage(message.author, random.choice(members), message.channel)
 
     '''Разное'''
     if message.content == '!head':
