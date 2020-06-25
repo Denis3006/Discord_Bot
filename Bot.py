@@ -498,7 +498,7 @@ async def on_message(message):
         else:
             members = []
             for member in message.guild.members:
-                if member.id != user.id and not (message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now()):
+                if member.id != message.author.id and not (message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now()):
                     members.append(member)
             await bartender.rage(message.author, random.choice(members), message.channel)
 
