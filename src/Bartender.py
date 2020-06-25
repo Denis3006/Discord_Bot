@@ -57,31 +57,33 @@ class Bartender:
             }
 
         self.drinks = {
-            'хугарден':    (f', Ваш тёплый Хугарден {Utility.emote("pepeClown")}', 5),
-            'вода':        (f', Ваша вода {Utility.emote("cup_with_straw")}', -10),
-            'энергетик':   (f', Ваш энергетик! {Utility.emote("PepeKMS")} \nНе спать! {Utility.emote("pepeRage")}', 0) 
+            'хугарден':   (f', Ваш тёплый Хугарден {Utility.emote("pepeClown")}', 5),
+            'вода':       (f', Ваша вода {Utility.emote("cup_with_straw")}', -10),
+            'энергетик':  (f', Ваш энергетик! {Utility.emote("PepeKMS")} \nНе спать! {Utility.emote("pepeRage")}', 0) 
             }
 
         self.coffee = {
             'американо'          : (f', Ваш американо {Utility.emote("coffee")}', 0),
             'капучино'           : (f', Ваш капучино {Utility.emote("coffee")}', 0),
             'латте'              : (f', Ваш латте {Utility.emote("coffee")}', 0),
+            'арахисовый латте'   : (f', Ваш арахисовый латте {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
             'моккачино'          : (f', Ваш моккачино {Utility.emote("coffee")}', 0),
             'флет уайт'          : (f', Ваш флет уайт {Utility.emote("coffee")}', 0),
             'маккиато'           : (f', Ваш маккиато {Utility.emote("coffee")}', 0),
+            'дынный раф'         : (f', Ваш дынный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
             'карамель маккиато'  : (f', Ваш сладенький карамель маккиато {Utility.emote("PepeHappy")}', 0),
             'просто кофе'        : (f', Ваш самый обчыный кофе {Utility.emote("4Head")}', 0),
             'эспрессо'           : (f', Ваше экспрессо {Utility.emote("3Head")}', 0)
             }
 
         self.tea = {
-            'чёрный чай'          : (f', Ваш чёрный чай {Utility.emote("tea")}', 0),
-            'зелёный чай'         : (f', Ваш зелёный чай {Utility.emote("tea")}', 0),
-            'белый чай'           : (f', Ваш белый чай {Utility.emote("tea")}', 0),
-            'пуэр'                : (f', Ваш пуэр {Utility.emote("tea")}', 0),
-            'дарджилинг'          : (f', Ваш дар... даржилинх {Utility.emote("3Head")}', 0),
-            'красный чай'         : (f', Ваш красный чай {Utility.emote("tea")}', 0),
-            'мате'                : (f', Ваш мате {Utility.emote("mate")}', 0)
+            'чёрный чай'   : (f', Ваш чёрный чай {Utility.emote("tea")}', 0),
+            'зелёный чай'  : (f', Ваш зелёный чай {Utility.emote("tea")}', 0),
+            'белый чай'    : (f', Ваш белый чай {Utility.emote("tea")}', 0),
+            'пуэр'         : (f', Ваш пуэр {Utility.emote("tea")}', 0),
+            'дарджилинг'   : (f', Ваш дар... даржилинх {Utility.emote("3Head")}', 0),
+            'красный чай'  : (f', Ваш красный чай {Utility.emote("tea")}', 0),
+            'мате'         : (f', Ваш мате {Utility.emote("mate")}', 0)
             }
 
         self.compliments = [  # список комплиментов бармена в формате "(реплика для парней, реплика для девушек)"
