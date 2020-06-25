@@ -126,14 +126,17 @@ class Bartender:
         await channel.send(f'{user.mention}{random.choice(self.thanks_replies)}')
 
     # Юзер начинает буянить в баре
-    async def rage(self, user, raged_user, channel):
+    async def rage(self, user, channel, user_list, rage_to=None):
         if user.id not in self.alcoholics.keys():
             self.alcoholics[user.id] = Alcoholic()
         if self.alcoholics[user.id].alco_test() >= 100:
             await channel.send(f"{user.mention}, ты слишком пьян для этого, проспись!")
         elif self.alcoholics[user.id].alco_test() >= 50:
             action = random.choice(self.rage_replies)
-            await channel.send(f'{user.mention}{action}'.format(raged_user.mention))
+            if rage_to is not None:
+                await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
+            else:
+                await channel.send(f'{user.mention}{action}'.format(raged_user.mention))
         else:
             await channel.send(f"Вы же не настолько пьяны, чтобы делать это? {Utility.emote('monkaSpolice')}")
 

@@ -24,10 +24,11 @@ def emote(emote_name : str):
 #Возвращает id юзера типа int при заданном пинге юзера (отметка через @)
 #В случае ошибки поднимает исключение ValueError
 def get_id(user_mention : str):
-    user_mention = user_mention.replace("<","")
-    user_mention = user_mention.replace(">","")
-    user_mention = user_mention.replace("@","")
-    user_mention = user_mention.replace("!","")
+    user_mention = user_mention.replace("<", "")
+    user_mention = user_mention.replace(">", "")
+    user_mention = user_mention.replace("@", "")
+    user_mention = user_mention.replace("!", "")
+    user_mention = user_mention.replace("&", "")
     return int(user_mention)
 
 #Выбирает подходящее окончание для "минуты" в зависимости от заданного количества минут 
