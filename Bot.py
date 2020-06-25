@@ -82,7 +82,6 @@ async def on_error(event, *args, **kwargs):
         for role in member.roles:
             if role.name == "Пепе-хацкер":
                 hackermen.append(member)
-    print(hackermen)
     for hackerman in hackermen:
         await client.get_user(hackerman.id).send('Ошибка в ' + event + '\n' + traceback.format_exc())  # Лог в лс
        
