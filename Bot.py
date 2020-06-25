@@ -60,6 +60,8 @@ async def on_ready():
 
     global bartender
     bartender = Bartender()
+    for member in Constants.GUILD.members:
+        bartender.alcoholics[member.id] = Alcoholic()
     print(f'{client.user} is connected to {Constants.GUILD.name}')
     # Считывние ссылок из .csv файла в сет gachi при запуске
     global gachi
@@ -71,6 +73,7 @@ async def on_ready():
 # Реакция на присоединение юзера к серверу
 @client.event
 async def on_member_join(member):
+    bartender.alcoholics[member.id] = Alcoholic()
     await Constants.MAIN_CHANNEL.send('Эй ' + member.mention + f', присаживайся... или падай под барную стойку {Utility.emote("MHM")}')
 
 # Реакция на ошибку в программе (необработанное исключение). Пишет в чат реакцию и скидывает в лс лог ошибки.
@@ -126,9 +129,7 @@ async def on_message(message):
         if message.author.id in durka.keys() and durka[message.author.id].timeout_untill > datetime.datetime.now():
             await message.channel.send(f'{message.author.mention}, опять за своё? {Utility.emote("durka")}')
         else:
-            if message.author.id not in bartender.alcoholics.keys():
-                bartender.alcoholics[message.author.id] = Alcoholic()
-            elif bartender.alcoholics[message.author.id].alco_test() == 0: 
+            if bartender.alcoholics[message.author.id].alco_test() == 0: 
                 bartender.alcoholics[message.author.id].reset()
             elif not bartender.alcoholics[message.author.id].hangover: # обновляет значение восстановления, если юзер не полностью пьян
                 bartender.alcoholics[message.author.id].recover()
@@ -167,8 +168,6 @@ async def on_message(message):
         else:
             non_int = False
             
-        if user is not None and user.id not in bartender.alcoholics.keys():
-            bartender.alcoholics[user.id] = Alcoholic()
         if not non_int and user is not None:
             # шанс успеха команды зависит от разницы нового и старого значений
             # чем меньше разница, тем больше шанс на успех
@@ -305,8 +304,6 @@ async def on_message(message):
                 user = discord.utils.get(message.guild.members, id=Utility.get_id(message.content.split()[1]))
             except ValueError:
                 user = None
-        if user.id not in bartender.alcoholics.keys():
-            bartender.alcoholics[user.id] = Alcoholic()      
         if user.id in durka.keys() and durka[user.id].timeout_untill > datetime.datetime.now():
             await message.channel.send(f'{user.mention}, меньше пить надо было! {Utility.emote("durka")}')
             return

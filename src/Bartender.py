@@ -143,8 +143,6 @@ class Bartender:
         if rage_to.id == Constants.ZAKHOZHKA_ID:
             await channel.send(f"{rage_to.mention} получает ладошкой по лбу от {user.mention}")
             return
-        if user.id not in self.alcoholics.keys():
-            self.alcoholics[user.id] = Alcoholic()
         if self.alcoholics[user.id].alco_test() >= 100:
             await channel.send(f"{user.mention}, ты слишком пьян для этого, проспись!")
         elif self.alcoholics[user.id].alco_test() >= 50:
@@ -176,9 +174,7 @@ class Bartender:
     async def give_drink(self, user, channel, drink=None, gift_giver=None, give_compliment=None):
         if give_compliment is None:
             give_compliment = (random.randrange(10) == 0)
-        if user.id not in self.alcoholics.keys():
-            self.alcoholics[user.id] = Alcoholic()
-        elif self.alcoholics[user.id].alco_test() == 0:
+        if self.alcoholics[user.id].alco_test() == 0:
             self.alcoholics[user.id].reset()
         elif not self.alcoholics[user.id].hangover:
             self.alcoholics[user.id].recover()
