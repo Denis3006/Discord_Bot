@@ -176,6 +176,9 @@ async def on_message(message):
             success = False
         if success:
             if alco_diff != 0:
+                if bartender.alcoholics[message.author.id].timeout_untill > datetime.datetime.now() and new_alco_percent < 100:
+                    bartender.alcoholics[message.author.id].timeout_untill = datetime.datetime.now() - datetime.timedelta(hours=1)
+                    bartender.alcoholics[message.author.id].hangover = False
                 bartender.alcoholics[user.id].reset()
                 bartender.alcoholics[user.id].last_drink_time = datetime.datetime.now()  # изменение степени опьянения засчитывается как напиток
                 bartender.alcoholics[user.id].alco_percent = new_alco_percent
