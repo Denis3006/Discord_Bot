@@ -59,7 +59,7 @@ class Bartender:
         self.drinks = {
             'хугарден':   (f', Ваш тёплый Хугарден {Utility.emote("pepeClown")}', 5),
             'вода':       (f', Ваша вода {Utility.emote("cup_with_straw")}', -10),
-            'энергетик':  (f', Ваш энергетик! {Utility.emote("PepeKMS")} \nНе спать! {Utility.emote("pepeRage")}', 0) 
+            'энергетик':  (f', Ваш энергетик! {Utility.emote("PepeKMS")} \nНе спать! {Utility.emote("pepeRage")}', 0)
             }
 
         self.coffee = {
@@ -110,7 +110,7 @@ class Bartender:
             ]
 
         self.rage_replies = [ # список действий, которые может сделать игрок, когда буянит
-            ' берет стакан и кидает его в случайного посетителя. Он летит в {}.\nСтакан летит мимо',
+            ' берет стакан и кидает его в случайного посетителя. Он летит в {}.',
             ' разбрасывает окурки из пепельницы. Окурок попадает на одежду {}',
             ' затевает драку с {} и побеждает',
             ' затевает драку с {} и проигрывает',
@@ -121,7 +121,18 @@ class Bartender:
             ' начинает громко орать на {}',
             ' начинает спорить с {}',
             ' спихивает со стула {}',
-            ' обзывает {} 1Head-ом ' + Utility.emote("1Head")
+            ' обзывает {} 1Head-ом ' + Utility.emote("1Head"),
+            ' танцует на столе с {}',
+            ' показывает средний палец {}',
+            ' называет {} уродом ' + Utility.emote("YROD")
+        ]
+
+        self.rage_throw_glass = [
+            'Стакан попадает в голову. Несите повязку и анальгин!',
+            'Стакан попадает в руку. Держать напитки становится труднее.',
+            'Стакан попадает в живот. Пивное пузо {} все защитило.',
+            'Стакан попадает в ногу. Пора делать деревянную ногу и пить грог.',
+            'Стакан попадает в сосочек.'
         ]
 
     async def reply_thanks(self, user, channel):
@@ -148,6 +159,24 @@ class Bartender:
         else:
             await channel.send(f'Вы же не настолько пьяны, чтобы делать это? {Utility.emote("monkaSpolice")}')
 
+    async def check_rage_situations(self, user, channel, action, rage_to):
+        if action == self.rage_replies[0]:
+            await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
+            if bool(random.getrandbits(1)):
+                throw = random.choice(self.rage_throw_glass)
+                if throw == self.rage_throw_glass[4]:
+                    await channel.send(f'{throw} {rage_to.mention} {Utility.gender(rage_to, "возбудился", "возбудилась")}')
+                else:
+                    await channel.send(f'{throw}'.format(rage_to.mention))
+            else:
+                await channel.send(f'Вы промахнулись, стакан вдребезги разбился о стену')
+        elif action == self.rage_replies[6]:
+            drink_name = random.choice(list(self.random_drinks.keys()))
+            drink = self.random_drinks[drink_name]
+            self.alcoholics[user.id].alco_percent += drink[1]
+            await channel.send(f'{user.mention}{action}'.format(drink_name, rage_to.mention))
+        else:
+            await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
 
     # наливает напиток юзеру (меняет степень опьянения; даёт таймаут, если степень опьянения >=100; выдаёт реплику)
     async def give_drink(self, user, channel, drink=None, gift_giver=None, give_compliment=None):
