@@ -149,13 +149,7 @@ class Bartender:
             await channel.send(f"{user.mention}, ты слишком пьян для этого, проспись!")
         elif self.alcoholics[user.id].alco_test() >= 50:
             action = random.choice(self.rage_replies)
-            if action == self.rage_replies[6]:
-                drink_name = random.choice(list(self.random_drinks.keys()))
-                drink = self.random_drinks[drink_name]
-                self.alcoholics[user.id].alco_percent += drink[1]
-                await channel.send(f'{user.mention}{action}'.format(drink_name, rage_to.mention))
-            else:
-                await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
+            await self.check_rage_situations(user, channel, action, rage_to)
         else:
             await channel.send(f'Вы же не настолько пьяны, чтобы делать это? {Utility.emote("monkaSpolice")}')
 
