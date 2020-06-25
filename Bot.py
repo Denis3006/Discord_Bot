@@ -489,11 +489,30 @@ async def on_message(message):
     # !буянить - юзер начинает буянить
     # Бот в зависимости от ситуации действует
 
-    if message.content == '!буянить':
+    if message.content.startswith('!буянить'):
         if message.author.id in durka.keys():
             await message.channel.send(f'На вас надета смирительная рубашка, вы не сможете навредить {Utility.emote("durka")}')
         else:
-            await bartender.rage(message.author, message.channel, message.guild.members)
+            if len(message.content.split()) > 1:
+                try:
+                    user = discord.utils.get(message.guild.members, id=Utility.get_id(str(message.content.split()[1])))
+                except ValueError:
+                    user = None
+                if user is None:
+                    try:
+                        role = discord.utils.get(Constants.GUILD.roles, id=Utility.get_id(str(message.content.split()[1])))
+                    except ValueError:
+                        role = None
+                    if role is None:
+                        await message.channel.send(
+                            f'Вы не находите {message.content.split()[1]} и бьете руками воздух!')
+                    else:
+                        await message.channel.send(
+                            f'Вы решили вызвать целый клан на бой, но все из клана "{role.mention}" смеются вам в лицо')
+                else:
+                    await bartender.rage(message.author, message.channel, message.guild.members, rage_to=user)
+            else:
+                await bartender.rage(message.author, message.channel, message.guild.members)
 
     '''Разное'''
     if message.content == '!head':
