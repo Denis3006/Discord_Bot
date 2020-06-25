@@ -512,9 +512,14 @@ async def on_message(message):
                         await message.channel.send(
                             f'Вы решили вызвать целый клан на бой, но все из клана "{role.mention}" смеются вам в лицо')
                 else:
-                    await bartender.rage(message.author, message.channel, message.guild.members, rage_to=user)
+                    await bartender.rage(message.author, message.channel, user)
             else:
-                await bartender.rage(message.author, message.channel, message.guild.members)
+                members = []
+                for member in message.guild.members:
+                    in_durka = (member.id in durka.keys() and durka[member.id].timeout_untill > datetime.datetime.now())
+                    if member.status is discord.Status.online and member.id != message.author.id and not in_durka:
+                        members.append(member)
+                await bartender.rage(message.author, message.channel, random.choice(members))
 
     '''Разное'''
     if message.content == '!head':
