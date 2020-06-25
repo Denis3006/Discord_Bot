@@ -9,7 +9,6 @@ GUILD_ID = int(os.getenv("GUILD_ID"))
 HACKERMAN_ID = int(os.getenv("HACKERMAN_ID"))
 BOT_ID = int(os.getenv("BOT_ID"))
 UKR_IDs = [int(os.getenv("UKR_1")), int(os.getenv("UKR_2"))]
-TGEU_ID = int(os.getenv("TGEU_ID"))
 GUILD = None
 BARTENDER_ROLE = None
 PEPEHACK_ROLE = None

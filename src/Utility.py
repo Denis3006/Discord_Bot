@@ -1,5 +1,6 @@
 import src.Constants as Constants
 import discord
+import emojis
 
 #Проверяет юзера на наличие админских прав
 def has_permissions(user):
@@ -15,6 +16,8 @@ def emote(emote_name : str):
     emote = discord.utils.get(Constants.GUILD.emojis, name=emote_name)
     if emote is not None:
         return str(emote)
+    elif emojis.count(emojis.encode(f':{emote_name}:')) > 0:
+        return emojis.encode(f':{emote_name}:')
     else:
         return ''
 
