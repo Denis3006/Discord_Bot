@@ -59,7 +59,7 @@ class Bartender:
         self.drinks = {
             'хугарден':   (f', Ваш тёплый Хугарден {Utility.emote("pepeClown")}', 5),
             'вода':       (f', Ваша вода {Utility.emote("cup_with_straw")}', -10),
-            'энергетик':  (f', Ваш энергетик! {Utility.emote("PepeKMS")} \nНе спать! {Utility.emote("pepeRage")}', 0) 
+            'энергетик':  (f', Ваш энергетик! {Utility.emote("PepeKMS")} \nНе спать! {Utility.emote("pepeRage")}', 0)
             }
 
         self.coffee = {
