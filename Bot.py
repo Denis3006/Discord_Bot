@@ -77,7 +77,14 @@ async def on_member_join(member):
 @client.event
 async def on_error(event, *args, **kwargs):
     await Constants.MAIN_CHANNEL.send(f'Что-то пошло не так {Utility.emote("FeelsBanMan")}')
-    await client.get_user(Constants.HACKERMAN_ID).send('Ошибка в ' + event + '\n' + traceback.format_exc())  # Лог в лс
+    hackermen = []
+    for member in Constants.MAIN_CHANNEL.members:
+        for role in member.roles:
+            if role.name == "Пепе-хацкер":
+                hackermen.append(member)
+    print(hackermen)
+    for hackerman in hackermen:
+        await client.get_user(hackerman.id).send('Ошибка в ' + event + '\n' + traceback.format_exc())  # Лог в лс
        
 # Обработка команд при помощи чтения и сравнивания кождого сообщения с командой
 #TODO: Возможно стоит перейти на фреймворк дискорда bot.command: больше возможностей, легче писать и поддержвать код, прямая поддержка дополнительных аргументов
@@ -478,6 +485,15 @@ async def on_message(message):
                     f' {Utility.emote("durka")} \nТебе сидеть в дурке ещё {minutes_left} {Utility.minutes(minutes_left)}! \n')
         else: # юзера нет в дурке
             await message.channel.send(Utility.gender(user, 'Пациента', 'Пациентку') + f' {user.mention} уже выпустили {Utility.emote("durka")}')
+
+    # !буянить - юзер начинает буянить
+    # Бот в зависимости от ситуации действует
+
+    if message.content == '!буянить':
+        if message.author.id in durka.keys():
+            await message.channel.send(f'На вас надета смирительная рубашка, вы не сможете навредить {Utility.emote("durka")}')
+        else:
+            await bartender.rage(message.author, message.channel, message.guild.members)
 
     '''Разное'''
     if message.content == '!head':

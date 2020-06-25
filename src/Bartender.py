@@ -49,7 +49,7 @@ class Bartender:
             'итальянская жена':     (f', Ваша итальянска жена приехала! Надеюсь, вы ей не изменяли с другими напитками', 13),
             'кловер клаб':          (f', Ваш кловер клаб! Джин, малина, лайм и белок перепелиного яйца... Стоп, а яйцо точно должно быть? {Utility.emote("3Head")}', 13),
             'апероль шприц':        (f', Ваш апероль шприц! Самый популярный коктейль Средиземного моря теперь в ваших руках {Utility.emote("tropical_drink")}', 10),
-            'молочный удар':        (f', Ваш молочный удар! Вы думали, это молоко? Нет, это он - виски', 22),
+            'молочный удар':        (f', Ваш молочный удар! Вы думали, это молоко? Нет, это оно - виски', 22),
             'ву-ву':                (f', Ваш ву-ву! Главное, чтобы потом не было бо-бо', 17),
             'баунти мартини':       (f', Ваш баунти мартини! По сути, клубнично-кокосовый милкшейк, вкусно и легко', 9),
             'греческая смоковница': (f', Ваша смоковница с инжиром! Выпиваешь шот, затем закусываешь инжиром - ничего сложного!', 19),
@@ -79,10 +79,43 @@ class Bartender:
             f', всегда рад стараться! {Utility.emote("pepeOK")}',
             f', это просто моя работа {Utility.emote("MHM")}',
             f', пожалуйста, конечно, но вы кто? {Utility.emote("Bored")}'
-            ]    
+            ]
+
+        self.rage_replies = [ # список действий, которые может сделать игрок, когда буянит
+            ' берет стакан и кидает его в случайного посетителя. Он летит в {}.\nСтакан летит мимо',
+            ' разбрасывает окурки из пепельницы. Окурок попадает на одежду {}',
+            ' затевает драку с {} и побеждает',
+            ' затевает драку с {} и проигрывает',
+            ' выплескивает ближайший напиток в {}',
+            ' плюет {} в лицо',
+            ' отнимает напиток у {} и выпивает его залпом',
+            ' берет бутылку в руки и делает из неё розочку. {} в опасности',
+            ' начинает громко орать на {}',
+            ' начинает спорить с {}',
+            ' спихивает со стула {}',
+            ' обзывает {} 1Head-ом ' + Utility.emote("1Head")
+        ]
 
     async def reply_thanks(self, user, channel):
         await channel.send(f'{user.mention}{random.choice(self.thanks_replies)}')
+
+    # Юзер начинает буянить в баре
+    async def rage(self, user, channel, user_list):
+        if user.id not in self.alcoholics.keys():
+            self.alcoholics[user.id] = Alcoholic()
+        members = []
+        for member in user_list:
+            if member.id != user.id:
+                members.append(member)
+        if self.alcoholics[user.id].alco_test() >= 100:
+            await channel.send(f"{user.mention}, ты слишком пьян для этого, проспись!")
+        elif self.alcoholics[user.id].alco_test() >= 50:
+            raged_user = random.choice(members)
+            action = random.choice(self.rage_replies)
+            await channel.send(f'{user.mention}{action}'.format(raged_user.mention))
+        else:
+            await channel.send(f"Вы же не настолько пьяны, чтобы делать это? {Utility.emote('monkaSpolice')}")
+
 
     # наливает напиток юзеру (меняет степень опьянения; даёт таймаут, если степень опьянения >=100; выдаёт реплику)
     async def give_drink(self, user, channel, drink=None, gift_giver=None, give_compliment=None):
