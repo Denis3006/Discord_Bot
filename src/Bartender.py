@@ -127,6 +127,9 @@ class Bartender:
 
     # Юзер начинает буянить в баре
     async def rage(self, user, channel, rage_to):
+        if rage_to.id == ZAKHOZHKA_ID:
+            await channel.send(f"{rage_to.mention} получает ладошкой по лбу от {user.mention}")
+            return
         if user.id not in self.alcoholics.keys():
             self.alcoholics[user.id] = Alcoholic()
         if self.alcoholics[user.id].alco_test() >= 100:
