@@ -63,17 +63,25 @@ class Bartender:
             }
 
         self.coffee = {
-            'американо'          : (f', Ваш американо {Utility.emote("coffee")}', 0),
-            'капучино'           : (f', Ваш капучино {Utility.emote("coffee")}', 0),
-            'латте'              : (f', Ваш латте {Utility.emote("coffee")}', 0),
-            'арахисовый латте'   : (f', Ваш арахисовый латте {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'моккачино'          : (f', Ваш моккачино {Utility.emote("coffee")}', 0),
-            'флет уайт'          : (f', Ваш флет уайт {Utility.emote("coffee")}', 0),
-            'маккиато'           : (f', Ваш маккиато {Utility.emote("coffee")}', 0),
-            'дынный раф'         : (f', Ваш дынный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'карамель маккиато'  : (f', Ваш сладенький карамель маккиато {Utility.emote("PepeHappy")}', 0),
-            'просто кофе'        : (f', Ваш самый обчыный кофе {Utility.emote("4Head")}', 0),
-            'эспрессо'           : (f', Ваше экспрессо {Utility.emote("3Head")}', 0)
+            'американо'               : (f', Ваш американо {Utility.emote("coffee")}', 0),
+            'капучино'                : (f', Ваш капучино {Utility.emote("coffee")}', 0),
+            'латте'                   : (f', Ваш латте {Utility.emote("coffee")}', 0),
+            'арахисовый латте'        : (f', Ваш арахисовый латте {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'моккачино'               : (f', Ваш моккачино {Utility.emote("coffee")}', 0),
+            'флет уайт'               : (f', Ваш флет уайт {Utility.emote("coffee")}', 0),
+            'маккиато'                : (f', Ваш маккиато {Utility.emote("coffee")}', 0),
+            'дынный раф'              : (f', Ваш дынный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'карамель маккиато'       : (f', Ваш сладенький карамель маккиато {Utility.emote("PepeHappy")}', 0),
+            'просто кофе'             : (f', Ваш самый обчыный кофе {Utility.emote("4Head")}', 0),
+            'эспрессо'                : (f', Ваше экспрессо {Utility.emote("3Head")}', 0),
+            'колд брю'                : (f', Ваш прохладительный колд брю {Utility.emote("ice_cube")}', 0),
+            'карамельный фраппучино'  : (f', Ваш карамельный фраппучино со взбитыми сливками {Utility.emote("PepeHappy")}', 0),
+            'фраппуччино'             : (f', Ваш классический фраппучино', 0),
+            'эспрессо фраппучино'     : (f', Ваш эспрессо фраппучино: молоко с молотым льдом и шотом эспрессо {Utility.emote("MHM")}', 0),
+            'мокка фраппучино'        : (f', Ваш мокка фраппучино {Utility.emote("coffee")}', 0),
+            'ванильный фраппучино'    : (f', Ваш ванильный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'шоколадный фраппучино'   : (f', Ваш сладенький шоколадный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'руссиано'                : (f', Ваш патриотический руссиано {Utility.emote("4Head")}', 0)
             }
 
         self.tea = {
@@ -143,9 +151,12 @@ class Bartender:
         if rage_to.id == Constants.ZAKHOZHKA_ID:
             await channel.send(f"{rage_to.mention} получает ладошкой по лбу от {user.mention}")
             return
-        if self.alcoholics[user.id].alco_test() >= 100:
+        if self.alcoholics[user.id].timeout_untill > datetime.datetime.now():
             await channel.send(f"{user.mention}, ты слишком пьян для этого, проспись!")
-        elif self.alcoholics[user.id].alco_test() >= 50:
+            return
+        else:
+            self.alcoholics[user.id].recover()
+        if self.alcoholics[user.id].alco_test() >= 50:
             action = random.choice(self.rage_replies)
             await self.check_rage_situations(user, channel, action, rage_to)
         else:
@@ -166,6 +177,8 @@ class Bartender:
             drink_name = random.choice(list(self.random_drinks.keys()))
             drink = self.random_drinks[drink_name]
             self.alcoholics[user.id].alco_percent += drink[1]
+            if self.alcoholics[user.id].alco_test() == 100:
+                self.alcoholics[user.id].set_hangover(random.randrange(20, 40))
             await channel.send(f'{user.mention}{action}'.format(drink_name, rage_to.mention))
         else:
             await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
@@ -198,6 +211,8 @@ class Bartender:
             drink = random.choice(list(self.tea.values()))
         elif drink == 'кофе':
             drink = random.choice(list(self.coffee.values()))
+        elif drink == 'вино':
+            drink = self.random_drinks[random.choice(['красное вино', 'белое вино', 'розовое вино'])]
         elif drink.lower() in self.random_drinks.keys():
             drink = self.random_drinks[drink.lower()]
         elif drink.lower() in self.drinks.keys():
