@@ -246,7 +246,7 @@ async def on_message(message):
             users = []
             if message.content.split()[1] == '@here' or message.content.split()[1] == '@everyone':
                 for member in Constants.GUILD.members:
-                    if member.status == discord.Status.online and member is not message.author and member.id != Constants.BOT_ID:
+                    if member.status is not discord.Status.offline and member is not message.author and member.id != Constants.BOT_ID:
                         users.append(member)
             else:
                 try:
@@ -254,7 +254,7 @@ async def on_message(message):
                     if not user:
                         members = discord.utils.get(message.guild.roles, id=Utility.get_id(message.content.split()[1])).members
                         for member in members:
-                            if member.status == discord.Status.online and member is not message.author and member.id != Constants.BOT_ID:
+                            if member.status is not discord.Status.offline and member is not message.author and member.id != Constants.BOT_ID:
                                 users.append(member)
                     else:
                         users.append(user)
@@ -528,7 +528,7 @@ async def on_message(message):
                 members = []
                 for member in message.guild.members:
                     in_durka = (member.id in durka.keys() and durka[member.id].timeout_untill > datetime.datetime.now())
-                    if member.status is discord.Status.online and member.id != message.author.id and not in_durka:
+                    if member.status is not discord.Status.offline and member.id != message.author.id and not in_durka:
                         members.append(member)
                 await bartender.rage(message.author, message.channel, random.choice(members))
 
