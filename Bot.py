@@ -245,9 +245,13 @@ async def on_message(message):
         if len(message.content.split()) > 1:
             users = []
             if message.content.split()[1] == '@here' or message.content.split()[1] == '@everyone':
-                for member in Constants.GUILD.members:
-                    if member.status is not discord.Status.offline and member is not message.author and member.id != Constants.BOT_ID:
-                        users.append(member)
+                if Utility.has_permissions(message.author):
+                    for member in Constants.GUILD.members:
+                        if member.status is not discord.Status.offline and member is not message.author and member.id != Constants.BOT_ID:
+                            users.append(member)
+                else:
+                    await message.channel.send(f'Сразу так много клиентов не смогу обслужить, простите {Utility.emote("FeelsBanMan")}')
+                    return
             else:
                 try:
                     user = discord.utils.get(message.guild.members, id=Utility.get_id(message.content.split()[1]))
