@@ -1,6 +1,7 @@
 import src.Constants as Constants
 import discord
 import emojis
+import datetime
 
 #Проверяет юзера на наличие админских прав
 def has_permissions(user):
@@ -43,3 +44,28 @@ def minutes(mins : int):
 #Ограничивает x в пределах x_min, x_max
 def clip(x, x_min, x_max):
     return max(x_min, min(x, x_max))
+
+
+def in_durka(user, durka : dict):
+    return user.id in durka.keys() and durka[user.id].timeout_untill > datetime.datetime.now()
+
+#Возвращает юзера указанного через @
+#Если юзер не найден или указание было неверным, возвращает None
+def get_user_from_mention(mention : str):
+    try:
+        return discord.utils.get(Constants.GUILD.members, id=get_id(mention))
+    except ValueError:
+        return None
+
+#Возвращает роль указанную через @
+#Если роль не найдена или указание было неверным, возвращает None
+def get_role_from_mention(mention : str):
+    try:
+        return discord.utils.get(Constants.GUILD.roles, id=get_id(mention))
+    except ValueError:
+        return None
+
+#Возвращает лист юзеров из user_list, которые удовлетворяют следующие условия:
+#Юзер онлайн, не имеет таймаута в дурке, и не входит в список banned_users
+def get_available_users(users_list : list, durka : dict, banned_users : list):
+    return [u for u in users_list if u.status is not discord.Status.offline and not in_durka(u, durka) and u not in banned_users]

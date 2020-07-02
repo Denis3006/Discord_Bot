@@ -11,6 +11,7 @@ BOT_ID = int(os.getenv("BOT_ID"))
 UKR_IDs = [int(os.getenv("UKR_1")), int(os.getenv("UKR_2"))]
 ZAKHOZHKA_ID = int(os.getenv("ZAKHOZHKA_ID"))
 GUILD = None
+BOT = None
 BARTENDER_ROLE = None
 PEPEHACK_ROLE = None
 FEMALE_ROLE = None

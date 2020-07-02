@@ -1,4 +1,5 @@
 import datetime
+import random
 from src.Utility import clip
 
 class Alcoholic:
@@ -30,3 +31,10 @@ class Alcoholic:
     def set_hangover(self, mins):
         self.hangover = True
         self.timeout_untill = self.last_drink_time + datetime.timedelta(minutes=mins)
+
+    def set_alco(self, new_alco_percent):
+        self.reset()
+        self.last_drink_time = datetime.datetime.now()  # изменение степени опьянения засчитывается как напиток
+        self.alco_percent = clip(new_alco_percent, 0, 100)
+        if self.alco_test() == 100:
+            self.set_hangover(random.randrange(20, 40))
