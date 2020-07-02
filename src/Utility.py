@@ -67,5 +67,8 @@ def get_role_from_mention(mention : str):
 
 #Возвращает лист юзеров из user_list, которые удовлетворяют следующие условия:
 #Юзер онлайн, не имеет таймаута в дурке, и не входит в список banned_users
-def get_available_users(users_list : list, durka : dict, banned_users : list):
-    return [u for u in users_list if u.status is not discord.Status.offline and not in_durka(u, durka) and u not in banned_users]
+def get_available_users(users_list : list, banned_users : list, durka=None):
+    if not durka:
+        return [u for u in users_list if u.status is not discord.Status.offline and u not in banned_users]
+    else:
+        return [u for u in users_list if u.status is not discord.Status.offline and not in_durka(u, durka) and u not in banned_users]
