@@ -1,7 +1,10 @@
-import src.Constants as Constants
+import datetime
+
 import discord
 import emojis
-import datetime
+
+import src.Constants as Constants
+
 
 #Проверяет юзера на наличие админских прав
 def has_permissions(user):
@@ -47,7 +50,7 @@ def clip(x, x_min, x_max):
 
 
 def in_durka(user, durka : dict):
-    return user.id in durka.keys() and durka[user.id].timeout_untill > datetime.datetime.now()
+    return user.id in durka.keys() and durka[user.id].timeout_mins_left() > 0
 
 #Возвращает юзера указанного через @
 #Если юзер не найден или указание было неверным, возвращает None

@@ -1,6 +1,9 @@
 import datetime
 import random
+from math import ceil
+
 from src.Utility import clip
+
 
 class Alcoholic:
     def __init__(self):
@@ -38,3 +41,9 @@ class Alcoholic:
         self.alco_percent = clip(new_alco_percent, 0, 100)
         if self.alco_test() == 100:
             self.set_hangover(random.randrange(20, 40))
+
+    def timeout_mins_left(self):
+        return max(0, ceil((self.timeout_untill - datetime.datetime.now()).total_seconds() / 60))
+
+    def remove_timeout(self):
+        self.timeout_untill = datetime.datetime.now() - datetime.timedelta(hours=1) # таймаут в прошлом = нет таймаута

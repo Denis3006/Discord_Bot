@@ -2,7 +2,6 @@ import csv
 import datetime
 import random
 import traceback
-from math import ceil
 
 import discord
 import validators
@@ -70,7 +69,7 @@ async def on_ready():
         gachi_reader = csv.reader(gachi_file)
         for row in gachi_reader:
             gachi.append(row[0])
-     
+
 # Реакция на присоединение юзера к серверу
 @client.event
 async def on_member_join(member):
@@ -90,24 +89,15 @@ async def on_error(event, *args, **kwargs):
 async def on_message(message):
     if message.author == client.user:
         return
-    
-    ''' Интерактив с барменом
-    TODO: Можно добавить больше реакций на разные сообщения по типу приветствий, доброе утро/день/вечер/ночь и т.д.
-          главное - чтоб не было слишком много лишних срабатываний и бот не реагировал на всё подряд
-          при этом желательно сделать всё не в виде команд, а более похожим на диалог, 
-          чтоб было максимально много интуитивных возможностей тригернуть реакцию, и не надо было вспоминать какая команда требуется для нужного ответа
-          эти два условия довольно сложно совместить
-    '''
+
     if ('бармен' in message.content.lower() or client.user.mention in message.content) and any(thanks in message.content.lower() for thanks in ['спасибо', 'благодарю', 'спс', 'благодарен']):
         if Utility.in_durka(message.author, durka):
             await message.channel.send(f'{message.author.mention}, Вы с кем разговариваете? {Utility.emote("durka")}')
         else:
             await bartender.reply_thanks(message.author, message.channel)
 
-
     elif message.content == '!БАРМЕН' or message.content.startswith('БАРМЕН'):
         await message.channel.send(f'{message.author.mention}, зачем Вы кричите на меня? {Utility.emote("pepeHands")}')
-
 
     elif message.content.lower() == '!бармен' or message.content.lower() == 'бармен?' or message.content.lower() == 'бармен!':
         if Utility.in_durka(message.author, durka):
@@ -118,7 +108,6 @@ async def on_message(message):
         else:
             await message.channel.send(f'{message.author.mention}, я за барной стойкой! {Utility.emote("pepeOK")}')
 
-    ''' Основные команды бармена '''
     # !алко - проверяет степень опьянённости юзера
     if message.content == '!алко':
         if Utility.in_durka(message.author, durka):
@@ -132,64 +121,29 @@ async def on_message(message):
         if Utility.in_durka(message.author, durka):
             await message.channel.send(f'{message.author.mention}, опять за своё? {Utility.emote("durka")}')
             return
-        
-        if len(message.content.split()) == 2:
-            user = message.author
-        else:
-            user = Utility.get_user_from_mention(message.content.split()[2])
 
+        user = message.author if (len(message.content.split()) == 2) else Utility.get_user_from_mention(message.content.split()[2])
         try:
             new_alco_percent = Utility.clip(int(message.content.split()[1]), 0, 100)
         except ValueError:
-            non_int = True
-        else:
-            non_int = False
+            new_alco_percent = None
             
-        if not non_int and user:
+        if new_alco_percent is not None and user:
             # шанс успеха команды зависит от разницы нового и старого значений
             # чем меньше разница, тем больше шанс на успех
             alco_diff = new_alco_percent - bartender.alcoholics[user.id].alco_test()
             success = random.randrange(101) >= abs(alco_diff)
-            if bartender.alcoholics[user.id].alco_test() == 100:  # у полностью пьяного юзера нельзя менять степень опьянения
-                success = False
             if message.content.split()[0] == '!алко_' and Utility.has_permissions(message.author):  # админская команда для 100% шанса на успех
                 success = True
+            elif bartender.alcoholics[user.id].timeout_mins_left() > 0:  # у полностью пьяного юзера нельзя менять степень опьянения
+                success = False
         else:
+            alco_diff = 0
             success = False
-        if success:
-            if alco_diff != 0:
-                if bartender.alcoholics[message.author.id].timeout_untill > datetime.datetime.now() and new_alco_percent < 100:
-                    bartender.alcoholics[message.author.id].timeout_untill = datetime.datetime.now() - datetime.timedelta(hours=1)
-                    bartender.alcoholics[message.author.id].hangover = False
-                bartender.alcoholics[user.id].set_alco(new_alco_percent)
-                if user is message.author:
-                    if alco_diff < 0:
-                        await message.channel.send(f'{message.author.mention} {Utility.gender(message.author, "разбавил", "разбавила")} водой свой напиток,' +\
-                            f' и теперь {Utility.gender(message.author, "пьян", "пьяна")} на {bartender.alcoholics[message.author.id].alco_test()}% {Utility.emote("MHM")}')
-                    else:
-                        await message.channel.send(f'{message.author.mention} {Utility.gender(message.author, "подмешал", "подмешала")} что-то себе в напиток,' +\
-                            f' и теперь {Utility.gender(message.author, "пьян", "пьяна")} на {bartender.alcoholics[message.author.id].alco_test()}% {Utility.emote("monkaS")}')
-                else:
-                    if alco_diff < 0:
-                        await message.channel.send(f'{message.author.mention} {Utility.gender(message.author, "разбавил", "разбавила")} водой напиток {user.mention} \n' +\
-                            f'Теперь {Utility.gender(user, "он", "она")} {Utility.gender(user, "пьян", "пьяна")} на {bartender.alcoholics[user.id].alco_test()}% {Utility.emote("MHM")}')
-                    else:
-                        await message.channel.send(f'{message.author.mention} {Utility.gender(message.author, "подмешал", "подмешала")} что-то {user.mention} в напиток \n' +\
-                            f'{user.mention} теперь {Utility.gender(user, "пьян", "пьяна")} на {bartender.alcoholics[user.id].alco_test()}% {Utility.emote("monkaS")}')
-            elif user is message.author:
-                await message.channel.send(f'{message.author.mention}, ты и так {Utility.gender(message.author, "пьян", "пьяна")} на {bartender.alcoholics[message.author.id].alco_test()}% {Utility.emote("MHM")}')
-            else:
-                await message.channel.send(f'{message.author.mention} {Utility.gender(message.author, "подмешал", "подмешала")} что-то {user.mention} в напиток \n' +\
-                    f'Это ничего не изменило, и {user.mention} до сих пор {Utility.gender(user, "пьян", "пьяна")} на {bartender.alcoholics[user.id].alco_test()}% {Utility.emote("MHM")}')
-        else:
-            if user is message.author or user is None:
-                await message.channel.send(f'У ' + Utility.gender(message.author, 'юного клофелинщика ', 'юной клофелинщицы ') + f'{message.author.mention} ничего не получилось, и ' + \
-                Utility.gender(message.author, 'он', 'она') + ' до сих пор ' + Utility.gender(message.author, 'пьян', 'пьяна') + \
-                    f' на {bartender.alcoholics[message.author.id].alco_test()}% {Utility.emote("LULW")}')
-            else:
-                await message.channel.send(f'У ' + Utility.gender(message.author, 'юного клофелинщика ', 'юной клофелинщицы ') + \
-                    f'{message.author.mention} ничего не получилось, и {user.mention} до сих пор ' + Utility.gender(user, 'пьян', 'пьяна') + \
-                    f' на {bartender.alcoholics[user.id].alco_test()}% {Utility.emote("LULW")}')
+        if success and alco_diff != 0:
+            bartender.alcoholics[user.id].remove_timeout()
+            bartender.alcoholics[user.id].set_alco(new_alco_percent)
+        await message.channel.send(choose_set_alco_phrase(message.author, user, alco_diff, success))
 
     # !выпить [напиток] - наливает автору напиток
     # если напиток не указан, наливает рандомный напиток
@@ -209,7 +163,7 @@ async def on_message(message):
             return
         voice_channel = discord.utils.get(Constants.GUILD.voice_channels, name='Ещё на барных стульях')
         for user in [u for u in voice_channel.members if u is not message.author]:
-            if user.id in durka.keys() and durka[user.id].timeout_untill > datetime.datetime.now():
+            if user.id in durka.keys() and durka[user.id].timeout_mins_left() > 0:
                 await message.channel.send(f'{user.mention}, Вам {Utility.gender(message.author, "передал", "передала")} успокоительное ' +\
                     f'{Utility.gender(message.author, "Ваш вымышленный друг", "Ваша вымышленная подруга")} {message.author.mention} {Utility.emote("durka")}')
             else:
@@ -258,9 +212,8 @@ async def on_message(message):
                 role = Utility.get_role_from_mention(message.content.split()[1])
                 if role:
                     users = Utility.get_available_users(role.members, [message.author, Constants.BOT])
-                    if not users:
-                        if len(role.members) == 1 and message.author in role.members and not Utility.in_durka(message.author, durka):
-                            users = [message.author]
+                    if not users and len(role.members) == 1 and message.author in role.members and not Utility.in_durka(message.author, durka):
+                        users = [message.author]
                 elif message.content.split()[1] == Utility.emote('YROD'):
                     users = [discord.utils.get(Constants.GUILD.members, id=Constants.HACKERMAN_ID)]
                     give_compliment = False
@@ -276,15 +229,13 @@ async def on_message(message):
         for user in users:
             if user is message.author:
                 await message.channel.send(f'{user.mention}, у Вас биполярочка? {Utility.emote("durka")}')
-            elif user.id in durka.keys() and durka[user.id].timeout_untill > datetime.datetime.now():
+            elif user.id in durka.keys() and durka[user.id].timeout_mins_left() > 0:
                 await message.channel.send(f'{user.mention}, Вам {Utility.gender(message.author, "передал", "передала")} успокоительное ' +\
                     f'{Utility.gender(message.author, "Ваш вымышленный друг", "Ваша вымышленная подруга")} {message.author.mention} {Utility.emote("durka")}')
             else:
-                await bartender.give_drink(user, message.channel, drink=drink, gift_giver=message.author, give_compliment=give_compliment)
+                await bartender.give_drink(user, message.channel, drink_name=drink, gift_giver=message.author, give_compliment=give_compliment)
         if message.content.split()[1] == Utility.emote('YROD'):
             await message.channel.send(f'{user.mention}, ебать ты урод! {Utility.emote("YROD")}')
-        
-
 
     # !протрезветь [@юзер] - админская команда, снимающая эффект полного опьянения у юзера
     # если юзер не указан, действует на автора сообщения
@@ -301,19 +252,19 @@ async def on_message(message):
             await message.channel.send(f'{user.mention}, меньше пить надо было! {Utility.emote("durka")}')
             return
 
-        if bartender.alcoholics[user.id].timeout_untill > datetime.datetime.now() or bartender.alcoholics[user.id].alco_test() != 0:
+        if bartender.alcoholics[user.id].timeout_mins_left() > 0 or bartender.alcoholics[user.id].alco_test() != 0:
             # юзер пьян, проверяем на наличие админских прав
             if Utility.has_permissions(message.author): # админские права есть, снимаем опьянение и таймаут
                 bartender.alcoholics[user.id].reset()
                 bartender.alcoholics[user.id].hangover = False
-                bartender.alcoholics[user.id].timeout_untill = datetime.datetime.now() - datetime.timedelta(hours=1)
+                bartender.alcoholics[user.id].remove_timeout()
                 if user is message.author:
                     await message.channel.send(f'{user.mention} принял анальгина и протрезвел {Utility.emote("pill")}')
                 else:
                     await message.channel.send(f'{message.author.mention} дал {user.mention} анальгина, и {Utility.gender(user, "тот протрезвел.", "та протрезвела.")}')
             else:  # админских прав нет
-                if bartender.alcoholics[user.id].timeout_untill > datetime.datetime.now():
-                    minutes_left = ceil((bartender.alcoholics[user.id].timeout_untill - datetime.datetime.now()).total_seconds() / 60)
+                if bartender.alcoholics[user.id].timeout_mins_left() > 0:
+                    minutes_left = bartender.alcoholics[message.author.id].timeout_mins_left()
                     if user is message.author:
                         await message.channel.send(f'{user.mention}, тебе поможет только сон. {Utility.emote("Bored")} Приходи через {minutes_left} {Utility.minutes(minutes_left)}.')
                     else:
@@ -329,7 +280,7 @@ async def on_message(message):
         else:
             await message.channel.send(f'{message.author.mention}, зря беспокоишься, {user.mention} и так в порядке {Utility.emote("pepeOK")}') 
 
-    '''Функционал гачи'''
+    ## Функционал гачи
     # !список_гачи - выдаёт полный список ссылок в канал дискорда
     if message.content == '!список_гачи':
         if message.channel.name != 'гачи':
@@ -401,7 +352,7 @@ async def on_message(message):
         else:
             await message.channel.send(f'{message.author.mention}, таких треков Dungeon Master не знает')  
 
-    '''Функционал дурки'''
+    ## Функционал дурки
     # !дурка [@юзер] - сажает юзера в дурку (изменение/запрет всех команд на x минут)
     # юзера может указать только человек с админскими правами
     # если юзер не указан, сажает в дурку автора сообщения
@@ -429,7 +380,7 @@ async def on_message(message):
         if user.id not in durka.keys():  # юзера нет в списке дурки, добавляем
             durka[user.id] = Alcoholic()
         elif Utility.in_durka(user, durka):  # юзер уже в дурке
-            minutes_left = ceil((durka[user.id].timeout_untill - datetime.datetime.now()).total_seconds() / 60)
+            minutes_left = durka[user.id].timeout_mins_left()
             if user is message.author:
                 await message.channel.send(f'{message.author.mention}, куда {Utility.gender(message.author, "собрался?", "собралась?")}' +\
                     f' {Utility.emote("durka")} \nТебе сидеть в дурке ещё {minutes_left} {Utility.minutes(minutes_left)}!')
@@ -457,17 +408,17 @@ async def on_message(message):
 
         if not user or user.id not in durka.keys():
             await message.channel.send(f'Таких пациентов не поступало... пока что {Utility.emote("durka")}')
-        elif durka[user.id].timeout_untill > datetime.datetime.now():
+        elif durka[user.id].timeout_mins_left() > 0:
             if Utility.has_permissions(message.author):
-                durka[user.id].timeout_untill = datetime.datetime.now() - datetime.timedelta(hours=1) # таймаут в прошлом = нет таймаута
+                durka[user.id].remove_timeout()
                 await message.channel.send(f'Поступил приказ, выпускаем {user.mention} {Utility.emote("durka")}')
-            elif len(message.content.split()) > 1 and user != message.author:
-                if message.author.id not in durka.keys(): 
+            elif user != message.author:
+                if not Utility.in_durka(message.author.id, durka): 
                     await message.channel.send(f'{message.author.mention}, а может мы лучше Вас заберём? {Utility.emote("durka")}')
                 else:
                     await message.channel.send(f'Кажется, пациенты {message.author.mention} и {user.mention} планируют побег! {Utility.emote("monkaSpolice")}')
             else:
-                minutes_left = ceil((durka[message.author.id].timeout_untill - datetime.datetime.now()).total_seconds() / 60)
+                minutes_left = durka[message.author.id].timeout_mins_left()
                 await message.channel.send(f'{message.author.mention}, куда ' + Utility.gender(message.author, 'собрался?', 'собралась?') + \
                     f' {Utility.emote("durka")} \nТебе сидеть в дурке ещё {minutes_left} {Utility.minutes(minutes_left)}! \n')
         else: # юзера нет в дурке
@@ -494,7 +445,6 @@ async def on_message(message):
             members = Utility.get_available_users(message.guild.members, [message.author, Constants.BOT], durka)
             await bartender.rage(message.author, message.channel, random.choice(members))
 
-    '''Разное'''
     if message.content == '!head':
         await message.channel.send(f'{message.author.mention}, сегодня ты')
         await message.channel.send(Utility.emote(random.choice(heads)))
@@ -517,5 +467,35 @@ async def on_message(message):
             await message.channel.send(Utility.emote("3Head") + " " + Utility.emote("UKR"))
         else:
             await message.channel.send('Вийди отсюда, розбiйник! Плохо чуеш мене?')
+
+
+def choose_set_alco_phrase(author, user, alco_diff, success):
+    if success:
+        if user is author:
+            if alco_diff < 0:
+                return f'{author.mention} {Utility.gender(author, "разбавил", "разбавила")} водой свой напиток,' +\
+                    f' и теперь {Utility.gender(author, "пьян", "пьяна")} на {bartender.alcoholics[author.id].alco_test()}% {Utility.emote("MHM")}'
+            elif alco_diff == 0:
+                return f'{author.mention}, ты и так {Utility.gender(author, "пьян", "пьяна")} на {bartender.alcoholics[author.id].alco_test()}% {Utility.emote("MHM")}'
+            else:
+                return f'{author.mention} {Utility.gender(author, "подмешал", "подмешала")} что-то себе в напиток,' +\
+                    f' и теперь {Utility.gender(author, "пьян", "пьяна")} на {bartender.alcoholics[author.id].alco_test()}% {Utility.emote("monkaS")}'
+        else:
+            if alco_diff < 0:
+                return f'{author.mention} {Utility.gender(author, "разбавил", "разбавила")} водой напиток {user.mention} \n' +\
+                    f'Теперь {Utility.gender(user, "он", "она")} {Utility.gender(user, "пьян", "пьяна")} на {bartender.alcoholics[user.id].alco_test()}% {Utility.emote("MHM")}'
+            elif alco_diff == 0:
+                return f'{author.mention} {Utility.gender(author, "подмешал", "подмешала")} что-то {user.mention} в напиток \n' +\
+                f'Это ничего не изменило, и {user.mention} до сих пор {Utility.gender(user, "пьян", "пьяна")} на {bartender.alcoholics[user.id].alco_test()}% {Utility.emote("MHM")}'
+            else:
+                return f'{author.mention} {Utility.gender(author, "подмешал", "подмешала")} что-то {user.mention} в напиток \n' +\
+                    f'{user.mention} теперь {Utility.gender(user, "пьян", "пьяна")} на {bartender.alcoholics[user.id].alco_test()}% {Utility.emote("monkaS")}'
+    elif user is author or user is None:
+        return f'У {Utility.gender(author, "юного клофелинщика", "юной клофелинщицы")} {author.mention} ничего не получилось, и ' +\
+        f'{Utility.gender(author, "он", "она")} до сих пор {Utility.gender(author, "пьян", "пьяна")}' +\
+            f' на {bartender.alcoholics[author.id].alco_test()}% {Utility.emote("LULW")}'
+    else:
+        return f'У {Utility.gender(author, "юного клофелинщика", "юной клофелинщицы")} {author.mention} ничего не получилось, и {user.mention} до сих пор '+\
+             f'{Utility.gender(user, "пьян", "пьяна")} на {bartender.alcoholics[user.id].alco_test()}% {Utility.emote("LULW")}'
 
 client.run(Constants.TOKEN)

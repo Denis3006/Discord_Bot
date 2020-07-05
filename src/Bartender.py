@@ -1,11 +1,12 @@
 import datetime
 import random
+
 import discord
-from math import ceil
 
 import src.Constants as Constants
 import src.Utility as Utility
 from src.Alcoholic import Alcoholic
+
 
 class Bartender:
     def __init__(self):
@@ -153,7 +154,7 @@ class Bartender:
             self.alcoholics[user.id].reset()
         elif not self.alcoholics[user.id].hangover: # обновляет значение восстановления, если юзер не полностью пьян
             self.alcoholics[user.id].recover()
-        if self.alcoholics[user.id].timeout_untill < datetime.datetime.now() and self.alcoholics[user.id].hangover is True:  
+        if self.alcoholics[user.id].timeout_mins_left == 0 and self.alcoholics[user.id].hangover is True:  
             # тайамут из-за полного опьянения был, но прошёл. обнуляем значения, и поднимаем процент оставшегося опьянения до рандомного значения
             self.alcoholics[user.id].set_alco(random.randrange(30, 70))
         alco_test = self.alcoholics[user.id].alco_test()
@@ -170,7 +171,7 @@ class Bartender:
         if rage_to.id == Constants.ZAKHOZHKA_ID:
             await channel.send(f"{rage_to.mention} получает ладошкой по лбу от {user.mention}")
             return
-        if self.alcoholics[user.id].timeout_untill > datetime.datetime.now():
+        if self.alcoholics[user.id].timeout_mins_left() > 0:
             await channel.send(f"{user.mention}, ты слишком пьян для этого, проспись!")
             return
         else:
@@ -180,6 +181,7 @@ class Bartender:
             await self.check_rage_situations(user, channel, action, rage_to)
         else:
             await channel.send(f'Вы же не настолько пьяны, чтобы делать это? {Utility.emote("monkaSpolice")}')
+
 
     async def check_rage_situations(self, user, channel, action, rage_to):
         if action == self.rage_replies[0]:
@@ -200,17 +202,16 @@ class Bartender:
         else:
             await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
 
+
     # наливает напиток юзеру (меняет степень опьянения; даёт таймаут, если степень опьянения >=100; выдаёт реплику)
-    async def give_drink(self, user, channel, drink=None, gift_giver=None, give_compliment=None):
-        if give_compliment is None:
-            give_compliment = (random.randrange(10) == 0)
+    async def give_drink(self, user, channel, drink_name=None, gift_giver=None, give_compliment=None):
         if self.alcoholics[user.id].alco_test() == 0:
             self.alcoholics[user.id].reset()
         elif not self.alcoholics[user.id].hangover:
             self.alcoholics[user.id].recover()
 
-        if self.alcoholics[user.id].timeout_untill > datetime.datetime.now():  # таймаут уже есть
-            minutes_left = ceil((self.alcoholics[user.id].timeout_untill - datetime.datetime.now()).total_seconds() / 60)
+        if self.alcoholics[user.id].timeout_mins_left() > 0:  # таймаут уже есть
+            minutes_left = self.alcoholics[user.id].timeout_mins_left()
             if gift_giver is not None:
                 await channel.send(f'{gift_giver.mention}, не трогай {user.mention}, {Utility.gender(user, "ему", "ей")} бы проспаться. {Utility.emote("Pepechill")} Попробуй угостить через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
             else:
@@ -219,26 +220,15 @@ class Bartender:
         elif self.alcoholics[user.id].hangover is True:  # таймаут был, но прошёл
             self.alcoholics[user.id].set_alco(random.randrange(30, 70))
 
-        if drink is None:
-            drink = random.choice(list(self.random_drinks.values()))
+        if drink_name is None:
             if discord.utils.get(Constants.GUILD.roles, name='Хугарднутый') in user.roles and self.special and gift_giver is None:
                 drink = self.drinks['хугарден']
-        elif drink == 'чай':
-            drink = random.choice(list(self.tea.values()))
-        elif drink == 'кофе':
-            drink = random.choice(list(self.coffee.values()))
-        elif drink == 'вино':
-            drink = self.random_drinks[random.choice(['красное вино', 'белое вино', 'розовое вино'])]
-        elif drink.lower() in self.random_drinks.keys():
-            drink = self.random_drinks[drink.lower()]
-        elif drink.lower() in self.drinks.keys():
-            drink = self.drinks[drink.lower()]
-        elif drink.lower() in self.tea.keys():
-            drink = self.tea[drink.lower()]
-        elif drink.lower() in self.coffee.keys():
-            drink = self.coffee[drink.lower()]
+            else:
+                drink = random.choice(list(self.random_drinks.values()))
         else:
-            if gift_giver is not None:
+            drink = self.choose_drink(drink_name)
+        if not drink:
+            if gift_giver:
                 await channel.send(f'Простите, {gift_giver.mention}, такого в нашем баре не наливают {Utility.emote("FeelsBanMan")}')
             else:
                 await channel.send(f'Простите, {user.mention}, такого в нашем баре не наливают {Utility.emote("FeelsBanMan")}')
@@ -268,19 +258,44 @@ class Bartender:
                     await channel.send(f'На этот раз за счёт заведения, {user.mention}{drink[0]}')
                 else:
                     await channel.send(f'Пожалуйста, {user.mention}{drink[0]}')
-        
-        if give_compliment:  # шанс на комплимент
-            compliment_nr = random.randrange(len(self.compliments))
-            if Constants.FEMALE_ROLE in user.roles:
-                compliment = self.compliments[compliment_nr][1]
-            else:
-                if compliment_nr == 3 and Constants.BARTENDER_ROLE in user.roles:
-                    compliment = self.compliments[compliment_nr][1]
-                else:
-                    compliment = self.compliments[compliment_nr][0]
+
+        if give_compliment is None:
+            give_compliment = (random.randrange(10) == 0)
+        if give_compliment:
+            compliment = self.choose_compliment(user)
             await channel.send(user.mention + compliment)
                     
         if self.alcoholics[user.id].alco_percent >= 100 and not self.alcoholics[user.id].hangover:
             # последний напиток опьянил юзера полностью, выдаём таймаут
             self.alcoholics[user.id].alco_percent = 100
             self.alcoholics[user.id].set_hangover(random.randrange(20, 40))
+
+
+    def choose_drink(self, drink_name: str):
+        if drink_name == 'чай':
+            return random.choice(list(self.tea.values()))
+        elif drink_name == 'кофе':
+            return random.choice(list(self.coffee.values()))
+        elif drink_name == 'вино':
+            return self.random_drinks[random.choice(['красное вино', 'белое вино', 'розовое вино'])]
+        elif drink_name.lower() in self.random_drinks.keys():
+            return self.random_drinks[drink_name.lower()]
+        elif drink_name.lower() in self.drinks.keys():
+            return self.drinks[drink_name.lower()]
+        elif drink_name.lower() in self.tea.keys():
+            return self.tea[drink_name.lower()]
+        elif drink_name.lower() in self.coffee.keys():
+            return self.coffee[drink_name.lower()]
+        else:
+            return None
+    
+
+    def choose_compliment(self, user):
+        compliment_nr = random.randrange(len(self.compliments))
+        if Constants.FEMALE_ROLE in user.roles:
+            return self.compliments[compliment_nr][1]
+        else:
+            if compliment_nr == 3 and Constants.BARTENDER_ROLE in user.roles:
+                return self.compliments[compliment_nr][1]
+            else:
+                return self.compliments[compliment_nr][0]
