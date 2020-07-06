@@ -210,23 +210,24 @@ class Bartender:
         elif not self.alcoholics[user.id].hangover:
             self.alcoholics[user.id].recover()
 
-        if self.alcoholics[user.id].timeout_mins_left() > 0:  # таймаут уже есть
-            minutes_left = self.alcoholics[user.id].timeout_mins_left()
-            if gift_giver is not None:
-                await channel.send(f'{gift_giver.mention}, не трогай {user.mention}, {Utility.gender(user, "ему", "ей")} бы проспаться. {Utility.emote("Pepechill")} Попробуй угостить через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
+        minutes_left = self.alcoholics[user.id].timeout_mins_left()
+        if minutes_left > 0:  # таймаут уже есть
+            if gift_giver:
+                await channel.send(f'{gift_giver.mention}, не трогай {user.mention}, {Utility.gender(user, "ему", "ей")} бы проспаться.' +\
+                f' {Utility.emote("Pepechill")} Попробуй угостить через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
             else:
-                await channel.send(f'{user.mention}, тебе бы проспаться. {Utility.emote("Pepechill")} Приходи через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
+                await channel.send(f'{user.mention}, тебе бы проспаться. {Utility.emote("Pepechill")} Приходи через {minutes_left} {Utility.minutes(minutes_left)}.')
             return
-        elif self.alcoholics[user.id].hangover is True:  # таймаут был, но прошёл
+        elif self.alcoholics[user.id].hangover:  # таймаут был, но прошёл
             self.alcoholics[user.id].set_alco(random.randrange(30, 70))
 
-        if drink_name is None:
+        if not drink_name:
             if discord.utils.get(Constants.GUILD.roles, name='Хугарднутый') in user.roles and self.special and gift_giver is None:
                 drink = self.drinks['хугарден']
             else:
                 drink = random.choice(list(self.random_drinks.values()))
         else:
-            drink = self.choose_drink(drink_name)
+            drink = self.get_drink(drink_name)
         if not drink:
             if gift_giver:
                 await channel.send(f'Простите, {gift_giver.mention}, такого в нашем баре не наливают {Utility.emote("FeelsBanMan")}')
@@ -238,40 +239,19 @@ class Bartender:
         if success:
             self.alcoholics[user.id].set_alco(self.alcoholics[user.id].alco_test() + drink[1])
 
-        if gift_giver is not None:
-            if not success:
-                await channel.send(random.choice(\
-                    [f'Ой, я кажется разлил напиток от {gift_giver.mention} для {user.mention}. Прошу прощения {Utility.emote("FeelsBanMan")}', \
-                    f'{user.mention}, Вас ' + Utility.gender(gift_giver, 'хотел угостить', 'хотела угостить') + f' {gift_giver.mention}! {Utility.emote("PepeHappy")}' + \
-                    f'\nПростите, я задумался и выпил Ваш напиток. Было вкусно {Utility.emote("pepeClown")}']))
-                return
-            else:
-                await channel.send(f'{user.mention}, Вас ' + Utility.gender(gift_giver, 'угостил', 'угостила') + f' {gift_giver.mention}! {Utility.emote("PepeHappy")} Держите{drink[0]}')
+        if gift_giver:
+            await channel.send(phrase_for_gifted_drink(success, drink, gift_giver, user))
         else:
-            if not success:
-                await channel.send(random.choice(\
-                    [f'Ой, я кажется разлил напиток для {user.mention}. Прошу прощения {Utility.emote("FeelsBadMan")}', \
-                    f'{user.mention}, простите, я заработался и не заметил, как выпил Ваш напиток {Utility.emote("monkaS")}']))
-                return
-            else:
-                if random.randrange(10) == 0:
-                    await channel.send(f'На этот раз за счёт заведения, {user.mention}{drink[0]}')
-                else:
-                    await channel.send(f'Пожалуйста, {user.mention}{drink[0]}')
+            await channel.send(phrase_for_nongifted_drink(success, drink, user))
 
         if give_compliment is None:
             give_compliment = (random.randrange(10) == 0)
         if give_compliment:
             compliment = self.choose_compliment(user)
             await channel.send(user.mention + compliment)
-                    
-        if self.alcoholics[user.id].alco_percent >= 100 and not self.alcoholics[user.id].hangover:
-            # последний напиток опьянил юзера полностью, выдаём таймаут
-            self.alcoholics[user.id].alco_percent = 100
-            self.alcoholics[user.id].set_hangover(random.randrange(20, 40))
 
 
-    def choose_drink(self, drink_name: str):
+    def get_drink(self, drink_name: str):
         if drink_name == 'чай':
             return random.choice(list(self.tea.values()))
         elif drink_name == 'кофе':
@@ -299,3 +279,24 @@ class Bartender:
                 return self.compliments[compliment_nr][1]
             else:
                 return self.compliments[compliment_nr][0]
+
+
+def phrase_for_gifted_drink(success, drink, gift_giver, gift_reciever):
+    if not success:
+        return random.choice(
+            [f'Ой, я кажется разлил напиток от {gift_giver.mention} для {gift_reciever.mention}. Прошу прощения {Utility.emote("FeelsBanMan")}',
+             f'{gift_reciever.mention}, Вас ' + Utility.gender(gift_giver, 'хотел угостить', 'хотела угостить') + f' {gift_giver.mention}! {Utility.emote("PepeHappy")}' +
+            f'\nПростите, я задумался и выпил Ваш напиток. Было вкусно {Utility.emote("pepeClown")}'])
+    else:
+        return f'{gift_reciever.mention}, Вас ' + Utility.gender(gift_giver, 'угостил', 'угостила') + f' {gift_giver.mention}! {Utility.emote("PepeHappy")} Держите{drink[0]}'
+
+
+def phrase_for_nongifted_drink(success, drink, user):
+    if not success:
+        return random.choice(
+            [f'Ой, я кажется разлил напиток для {user.mention}. Прошу прощения {Utility.emote("FeelsBadMan")}',
+            f'{user.mention}, простите, я заработался и не заметил, как выпил Ваш напиток {Utility.emote("monkaS")}'])
+    elif random.randrange(10) == 0:
+        return f'На этот раз за счёт заведения, {user.mention}{drink[0]}'
+    else:
+        return f'Пожалуйста, {user.mention}{drink[0]}'
