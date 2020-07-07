@@ -184,7 +184,7 @@ async def on_message(message):
                 await message.channel.send(f'Сразу так много клиентов не смогу обслужить, простите {Utility.emote("FeelsBanMan")}')
                 return
         else:
-            voice_channel = Utility.get_voice_channel_from_name(' '.join(message.content.split()[1:]))
+            voice_channel = Utility.get_voice_channel_from_message(message.content)
             if voice_channel:
                 drink_name = message.content.lower().replace(f'!угостить {voice_channel.name.lower()} ', '')
                 if not drink_name:
@@ -207,11 +207,12 @@ async def on_message(message):
                     user = Utility.get_user_from_mention(message.content.split()[1])
                     if user:
                         await gift_drink_to_user(message.author, user, message.channel, drink, None)
+                        return
                     elif message.content.split()[1] == Utility.emote('YROD'):
                         user = discord.utils.get(Constants.GUILD.members, id=Constants.HACKERMAN_ID)
                         await gift_drink_to_user(message.author, user, message.channel, drink, False)
                         await message.channel.send(f'{user.mention}, ебать ты урод! {Utility.emote("YROD")}')
-                    return
+                        return
             if users:
                 if Utility.in_durka(message.author, durka): # автор в дурке
                     await message.channel.send(f'{message.author.mention}, я так посмотрю у Вас слишком много друзей {Utility.emote("durka")}')
