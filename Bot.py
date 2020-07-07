@@ -185,10 +185,10 @@ async def on_message(message):
                 return
         else:
             voice_channel = Utility.get_voice_channel_from_name(' '.join(message.content.split()[1:]))
-            drink_name = message.content.lower().replace('!угостить' + voice_channel.name().lower(), '')
-            if not drink_name:
-                drink_name = None
             if voice_channel:
+                drink_name = message.content.lower().replace(f'!угостить {voice_channel.name.lower()} ', '')
+                if not drink_name:
+                    drink_name = None
                 for user in [u for u in voice_channel.members if u is not message.author]:
                     if user.id in durka.keys() and durka[user.id].timeout_mins_left() > 0:
                         await message.channel.send(f'{user.mention}, Вам {Utility.gender(message.author, "передал", "передала")} успокоительное ' +
