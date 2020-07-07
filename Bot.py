@@ -184,7 +184,7 @@ async def on_message(message):
                 await message.channel.send(f'Сразу так много клиентов не смогу обслужить, простите {Utility.emote("FeelsBanMan")}')
                 return
         else:
-            voice_channel = discord.utils.get(Constants.GUILD.voice_channels, name=' '.join(message.content.split()[1:]))
+            voice_channel = Utility.get_voice_channel_from_name(' '.join(message.content.split()[1:]))
             if voice_channel:
                 for user in [u for u in voice_channel.members if u is not message.author]:
                     if user.id in durka.keys() and durka[user.id].timeout_mins_left() > 0:

@@ -68,6 +68,9 @@ def get_role_from_mention(mention : str):
     except ValueError:
         return None
 
+def get_voice_channel_from_name(channel_name: str):
+    return next((channel for channel in Constants.GUILD.voice_channels if channel.name.lower() == channel_name.lower()), None)
+
 #Возвращает лист юзеров из user_list, которые удовлетворяют следующие условия:
 #Юзер онлайн, не имеет таймаута в дурке, и не входит в список banned_users
 def get_available_users(users_list : list, banned_users : list, durka=None):
