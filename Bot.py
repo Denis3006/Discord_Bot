@@ -213,16 +213,16 @@ async def on_message(message):
                         await gift_drink_to_user(message.author, user, message.channel, drink, False)
                         await message.channel.send(f'{user.mention}, ебать ты урод! {Utility.emote("YROD")}')
                         return
-            if users:
-                if Utility.in_durka(message.author, durka): # автор в дурке
-                    await message.channel.send(f'{message.author.mention}, я так посмотрю у Вас слишком много друзей {Utility.emote("durka")}')
-                else:
-                    await gift_drink_to_multiple_users(message.author, users, message.channel, drink)
-                return
-            elif Utility.in_durka(message.author, durka):
-                await message.channel.send(f'Таких пациентов пока не видел! {Utility.emote("durka")}')
+        if users:
+            if Utility.in_durka(message.author, durka): # автор в дурке
+                await message.channel.send(f'{message.author.mention}, я так посмотрю у Вас слишком много друзей {Utility.emote("durka")}')
             else:
-                await message.channel.send(f'Извините, таких посетителей не видел')
+                await gift_drink_to_multiple_users(message.author, users, message.channel, drink)
+            return
+        elif Utility.in_durka(message.author, durka):
+            await message.channel.send(f'Таких пациентов пока не видел! {Utility.emote("durka")}')
+        else:
+            await message.channel.send(f'Извините, таких посетителей не видел')
 
     # !протрезветь [@юзер] - админская команда, снимающая эффект полного опьянения у юзера
     # если юзер не указан, действует на автора сообщения
