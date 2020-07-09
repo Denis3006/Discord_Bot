@@ -185,6 +185,7 @@ async def on_message(message):
                 return
         else:
             voice_channel = Utility.get_voice_channel_from_message(message.content)
+            
             if voice_channel:
                 drink_name = message.content.lower().replace(f'!угостить {voice_channel.name.lower()} ', '')
                 if not drink_name:
