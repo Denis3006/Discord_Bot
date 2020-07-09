@@ -184,8 +184,7 @@ async def on_message(message):
                 await message.channel.send(f'Сразу так много клиентов не смогу обслужить, простите {Utility.emote("FeelsBanMan")}')
                 return
         else:
-            voice_channel = Utility.get_voice_channel_from_message(message.content)
-            if voice_channel:
+            if voice_channel := Utility.get_voice_channel_from_message(message.content):
                 drink_name = message.content.lower().replace(f'!угостить {voice_channel.name.lower()} ', '')
                 if not drink_name:
                     drink_name = None
@@ -197,15 +196,13 @@ async def on_message(message):
                         await bartender.give_drink(user, message.channel, gift_giver=message.author, drink_name=drink_name)
                 return
             else:
-                role = Utility.get_role_from_mention(message.content.split()[1])
-                if role:
+                if role := Utility.get_role_from_mention(message.content.split()[1]):
                     users = Utility.get_available_users(role.members, [message.author, Constants.BOT])
                     if not users and len(role.members) == 1 and message.author in role.members and not Utility.in_durka(message.author, durka):
                         await gift_drink_to_user(message.author, message.author, message.channel, drink, None)
                         return
                 else:
-                    user = Utility.get_user_from_mention(message.content.split()[1])
-                    if user:
+                    if user := Utility.get_user_from_mention(message.content.split()[1]):
                         await gift_drink_to_user(message.author, user, message.channel, drink, None)
                         return
                     elif message.content.split()[1] == Utility.emote('YROD'):
@@ -386,7 +383,7 @@ async def on_message(message):
     # если юзер не указан, выпускает автора сообщения
     if message.content.startswith('!выпустить'):
         user = message.author if len(message.content.split()) == 1 else Utility.get_user_from_mention(message.content.split()[1])
-
+        
         if not user or user.id not in durka.keys():
             await message.channel.send(f'Таких пациентов не поступало... пока что {Utility.emote("durka")}')
         elif durka[user.id].timeout_mins_left() > 0:

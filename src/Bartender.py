@@ -7,7 +7,6 @@ import src.Constants as Constants
 import src.Utility as Utility
 from src.Alcoholic import Alcoholic
 
-
 class Bartender:
     def __init__(self):
         self.alcoholics = dict()  # словарь юзеров в баре
