@@ -17,8 +17,7 @@ def gender(user, male, female):
 #Выдаёт форматированный смайл с названием emote_name в формате строки для сообщения в дискорде
 #Если смайла с данным именем нет на сервере, возвращаяется пустая строка
 def emote(emote_name : str):
-    emote = discord.utils.get(Constants.GUILD.emojis, name=emote_name)
-    if emote is not None:
+    if emote := discord.utils.get(Constants.GUILD.emojis, name=emote_name):
         return str(emote)
     elif emojis.count(emojis.encode(f':{emote_name}:')) > 0:
         return emojis.encode(f':{emote_name}:')
