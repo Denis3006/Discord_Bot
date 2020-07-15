@@ -185,7 +185,7 @@ async def on_message(message):
                 return
         else:
             if (voice_channel := Utility.get_voice_channel_from_message(message.content)):
-                drink_name = message.content.lower().replace(f'!угостить {voice_channel.name.lower()} ', '')
+                drink_name = message.content.lower().replace(f'!угостить {voice_channel.name.lower()}', '').lstrip()
                 if not drink_name:
                     drink_name = None
                 for user in [u for u in voice_channel.members if u is not message.author]:
