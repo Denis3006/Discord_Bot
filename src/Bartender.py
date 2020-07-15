@@ -57,37 +57,41 @@ class Bartender:
             }
 
         self.drinks = {
-            'хугарден':   (f', Ваш тёплый Хугарден {Utility.emote("pepeClown")}', 5),
-            'вода':       (f', Ваша вода {Utility.emote("cup_with_straw")}', -10),
+            'хугарден' :  (f', Ваш тёплый Хугарден {Utility.emote("pepeClown")}', 5),
+            'вода'     :  (f', Ваша вода {Utility.emote("cup_with_straw")}', -10),
             'энергетик':  (f', Ваш энергетик! {Utility.emote("PepeKMS")} \nНе спать! {Utility.emote("pepeRage")}', 0)
             }
 
         self.coffee = {
-            'американо'               : (f', Ваш американо {Utility.emote("coffee")}', 0),
-            'капучино'                : (f', Ваш капучино {Utility.emote("coffee")}', 0),
-            'латте'                   : (f', Ваш латте {Utility.emote("coffee")}', 0),
-            'арахисовый латте'        : (f', Ваш арахисовый латте {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'моккачино'               : (f', Ваш моккачино {Utility.emote("coffee")}', 0),
-            'флет уайт'               : (f', Ваш флет уайт {Utility.emote("coffee")}', 0),
-            'маккиато'                : (f', Ваш маккиато {Utility.emote("coffee")}', 0),
-            'дынный раф'              : (f', Ваш дынный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'карамель маккиато'       : (f', Ваш сладенький карамель маккиато {Utility.emote("PepeHappy")}', 0),
-            'просто кофе'             : (f', Ваш самый обчыный кофе {Utility.emote("4Head")}', 0),
-            'эспрессо'                : (f', Ваше экспрессо {Utility.emote("3Head")}', 0),
-            'колд брю'                : (f', Ваш прохладительный колд брю {Utility.emote("ice_cube")}', 0),
-            'карамельный фраппучино'  : (f', Ваш карамельный фраппучино со взбитыми сливками {Utility.emote("PepeHappy")}', 0),
-            'фраппуччино'             : (f', Ваш классический фраппучино', 0),
-            'эспрессо фраппучино'     : (f', Ваш эспрессо фраппучино: молоко с молотым льдом и шотом эспрессо {Utility.emote("MHM")}', 0),
-            'мокка фраппучино'        : (f', Ваш мокка фраппучино {Utility.emote("coffee")}', 0),
-            'ванильный фраппучино'    : (f', Ваш ванильный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'шоколадный фраппучино'   : (f', Ваш сладенький шоколадный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'руссиано'                : (f', Ваш патриотический руссиано {Utility.emote("4Head")}', 0)
+            'американо'              : (f', Ваш американо {Utility.emote("coffee")}', 0),
+            'капучино'               : (f', Ваш капучино {Utility.emote("coffee")}', 0),
+            'латте'                  : (f', Ваш латте {Utility.emote("coffee")}', 0),
+            'арахисовый латте'       : (f', Ваш арахисовый латте {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'моккачино'              : (f', Ваш моккачино {Utility.emote("coffee")}', 0),
+            'флет уайт'              : (f', Ваш флет уайт {Utility.emote("coffee")}', 0),
+            'маккиато'               : (f', Ваш маккиато {Utility.emote("coffee")}', 0),
+            'дынный раф'             : (f', Ваш дынный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'цитрусовый раф'         : (f', Ваш цитрусовый  раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'шоколадный раф'         : (f', Ваш шоколадный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'ежевичный раф'          : (f', Ваш ежевичный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'грушевый раф'           : (f', Ваш грушевый раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'карамель маккиато'      : (f', Ваш сладенький карамель маккиато {Utility.emote("PepeHappy")}', 0),
+            'просто кофе'            : (f', Ваш самый обчыный кофе {Utility.emote("4Head")}', 0),
+            'эспрессо'               : (f', Ваше экспрессо {Utility.emote("3Head")}', 0),
+            'колд брю'               : (f', Ваш прохладительный колд брю {Utility.emote("ice_cube")}', 0),
+            'карамельный фраппучино' : (f', Ваш карамельный фраппучино со взбитыми сливками {Utility.emote("PepeHappy")}', 0),
+            'эспрессо фраппучино'    : (f', Ваш эспрессо фраппучино: молоко с молотым льдом и шотом эспрессо {Utility.emote("MHM")}', 0),
+            'мокка фраппучино'       : (f', Ваш мокка фраппучино {Utility.emote("coffee")}', 0),
+            'ванильный фраппучино'   : (f', Ваш ванильный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'шоколадный фраппучино'  : (f', Ваш сладенький шоколадный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'руссиано'               : (f', Ваш патриотический руссиано {Utility.emote("4Head")}', 0)
             }
 
         self.tea = {
             'чёрный чай'   : (f', Ваш чёрный чай {Utility.emote("tea")}', 0),
+            'розовый чай'  : (f', Ваш розовый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
             'зелёный чай'  : (f', Ваш зелёный чай {Utility.emote("tea")}', 0),
-            'белый чай'    : (f', Ваш белый чай {Utility.emote("tea")}', 0),
+            'белый чай'    : (f', Ваш белый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
             'пуэр'         : (f', Ваш пуэр {Utility.emote("tea")}', 0),
             'дарджилинг'   : (f', Ваш дар... даржилинх {Utility.emote("3Head")}', 0),
             'красный чай'  : (f', Ваш красный чай {Utility.emote("tea")}', 0),
@@ -256,7 +260,9 @@ class Bartender:
         elif drink_name == 'кофе':
             return random.choice(list(self.coffee.values()))
         elif drink_name == 'вино':
-            return self.random_drinks[random.choice(['красное вино', 'белое вино', 'розовое вино'])]
+            return self.random_drinks[random.choice([key for key in self.random_drinks.keys() if drink_name in key])]
+        elif drink_name == 'раф' or drink_name == 'фраппучино':
+            return self.coffee[random.choice([key for key in self.coffee.keys() if drink_name in key])]
         elif drink_name.lower() in self.random_drinks.keys():
             return self.random_drinks[drink_name.lower()]
         elif drink_name.lower() in self.drinks.keys():
