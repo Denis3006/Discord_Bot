@@ -11,31 +11,21 @@ class Alcoholic:
         self.recovery_rate = 1/6    # скорость восстановления степени опьянения со временем (алко/мин)
         query_result = psql.get_alcogolic_data(self.id)
         self.alco_percent = query_result['alco_percent']            # степень опьянения в процентах от 0 до 100
-        self.recovered_percent = query_result['recovered_percent']  # восстановленные проценты опьянения со временем
         # метка времени, до которого был выдан таймаут (таймаут в прошлом = нет таймаута)
         self.timeout_untill = query_result['timeout_untill'].replace(tzinfo=None)
         self.last_drink_time = query_result['last_drink_time'].replace(tzinfo=None)  # метка времени последнего напитка
         # статус полного опьянения = таймаута. станет True, если процент опьянения дойдёт до 100
         self.hangover = query_result['hangover']
+        self.recover()
 
 
-    def __del__(self):
-        id = self.id
-        alcoholic_dict = self.__dict__
-        del alcoholic_dict['id']
-        del alcoholic_dict['recovery_rate']
-        alcoholic_dict['timeout_untill'] = f"'{str(alcoholic_dict['timeout_untill'])}'"
-        alcoholic_dict['last_drink_time'] = f"'{str(alcoholic_dict['last_drink_time'])}'"   
-        psql.upload_alcoholic_data(id, alcoholic_dict)
+    def __del__(self): 
+        psql.upload_alcoholic_data(self.id,
+                                   {'alco_percent': self.alco_percent,
+                                    'hangover': self.hangover,
+                                    'timeout_untill': f"'{str(self.timeout_untill)}'",
+                                    'last_drink_time': f"'{str(self.last_drink_time)}'"})
 
-
-    def retrieve_alcoholic_from_db(self):
-        query_result = psql.get_alcogolic_data(self.id)
-        self.alco_percent = query_result['alco_percent']
-        self.recovered_percent = query_result['recovered_percent']
-        self.timeout_untill = query_result['timeout_untill']
-        self.last_drink_time = query_result['last_drink_time']
-        self.hangover = query_result['hangover']
 
     # выдаёт процент опьянения с учётом восстановления со временем
     def alco_test(self):

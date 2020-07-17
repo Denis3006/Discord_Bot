@@ -17,8 +17,8 @@ def connect_to_psql():
 
 def db_add_alcoholic_if_missing(user):
     cur = Constants.DB_CONNECTION.cursor()
-    sql = "INSERT INTO alcoholics (id, name, alco_percent, recovered_percent, hangover, timeout_untill, last_drink_time)" +\
-          " VALUES({}, '{}', 0, 0, false, '{}', '{}') ON CONFLICT DO NOTHING"
+    sql = "INSERT INTO alcoholics (id, name, alco_percent, hangover, timeout_untill, last_drink_time)" +\
+          " VALUES({}, '{}', 0, false, '{}', '{}') ON CONFLICT DO NOTHING"
     cur.execute(sql.format(user.id, user.name, datetime.now(), datetime.now()))
     cur.close()
     Constants.DB_CONNECTION.commit()
