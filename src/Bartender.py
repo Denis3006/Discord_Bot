@@ -9,7 +9,6 @@ from src.Alcoholic import Alcoholic
 
 class Bartender:
     def __init__(self):
-        self.alcoholics = dict()  # словарь юзеров в баре
         self.special = False  # флаг для специальных ивентов (пока что один)
         self.random_drinks = {  # словарь напитков в баре формата "название: (реплика, алко)", где алко - степень опьянения от напитка
             'спирт':                (f', порция чистого спирта {Utility.emote("Pepega")} \nНадеюсь ты не помрёшь {Utility.emote("LULW")}', 50),
@@ -88,14 +87,14 @@ class Bartender:
             }
 
         self.tea = {
-            'чёрный чай'   : (f', Ваш чёрный чай {Utility.emote("tea")}', 0),
-            'розовый чай'  : (f', Ваш розовый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
-            'зелёный чай'  : (f', Ваш зелёный чай {Utility.emote("tea")}', 0),
-            'белый чай'    : (f', Ваш белый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
-            'пуэр'         : (f', Ваш пуэр {Utility.emote("tea")}', 0),
-            'дарджилинг'   : (f', Ваш дар... даржилинх {Utility.emote("3Head")}', 0),
-            'красный чай'  : (f', Ваш красный чай {Utility.emote("tea")}', 0),
-            'мате'         : (f', Ваш мате {Utility.emote("mate")}', 0)
+            'чёрный чай'  : (f', Ваш чёрный чай {Utility.emote("tea")}', 0),
+            'розовый чай' : (f', Ваш розовый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
+            'зелёный чай' : (f', Ваш зелёный чай {Utility.emote("tea")}', 0),
+            'белый чай'   : (f', Ваш белый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
+            'пуэр'        : (f', Ваш пуэр {Utility.emote("tea")}', 0),
+            'дарджилинг'  : (f', Ваш дар... даржилинх {Utility.emote("3Head")}', 0),
+            'красный чай' : (f', Ваш красный чай {Utility.emote("tea")}', 0),
+            'мате'        : (f', Ваш мате {Utility.emote("mate")}', 0)
             }
 
         self.compliments = [  # список комплиментов бармена в формате "(реплика для парней, реплика для девушек)"
@@ -153,33 +152,35 @@ class Bartender:
 
 
     async def check_alco(self, user, channel):
-        if self.alcoholics[user.id].alco_test() == 0:
-            self.alcoholics[user.id].reset()
-        elif not self.alcoholics[user.id].hangover: # обновляет значение восстановления, если юзер не полностью пьян
-            self.alcoholics[user.id].recover()
-        if self.alcoholics[user.id].timeout_mins_left == 0 and self.alcoholics[user.id].hangover is True:  
+        alcoholic = Alcoholic(user.id)
+        if alcoholic.alco_test() == 0:
+            alcoholic.reset()
+        elif not alcoholic.hangover:  # обновляет значение восстановления, если юзер не полностью пьян
+            alcoholic.recover()
+        if alcoholic.timeout_mins_left == 0 and alcoholic.hangover is True:
             # тайамут из-за полного опьянения был, но прошёл. обнуляем значения, и поднимаем процент оставшегося опьянения до рандомного значения
-            self.alcoholics[user.id].set_alco(random.randrange(30, 70))
-        alco_test = self.alcoholics[user.id].alco_test()
+            alcoholic.set_alco(random.randrange(30, 70))
+        alco_test = alcoholic.alco_test()
         if alco_test == 100:
             await channel.send(random.choice(\
                 [f'{user.mention}, выглядишь на все :100: {Utility.emote("MonkaChrist")}', \
                 f'{user.mention}, ты {Utility.gender(user, "пьян", "пьяна")} на 100% {Utility.emote("Pepechill")} \nИди проспись! {Utility.emote("MHM")}']))
         else:
-            await channel.send(f'{user.mention}, ты {Utility.gender(user, "пьян", "пьяна")} на {self.alcoholics[user.id].alco_test()}% {Utility.emote("Pepechill")}')
+            await channel.send(f'{user.mention}, ты {Utility.gender(user, "пьян", "пьяна")} на {alcoholic.alco_test()}% {Utility.emote("Pepechill")}')
 
 
     # Юзер начинает буянить в баре
     async def rage(self, user, channel, rage_to):
+        alcoholic = Alcoholic(user.id)
         if rage_to.id == Constants.ZAKHOZHKA_ID:
             await channel.send(f"{rage_to.mention} получает ладошкой по лбу от {user.mention}")
             return
-        if self.alcoholics[user.id].timeout_mins_left() > 0:
+        if alcoholic.timeout_mins_left() > 0:
             await channel.send(f"{user.mention}, ты слишком пьян для этого, проспись!")
             return
         else:
-            self.alcoholics[user.id].recover()
-        if self.alcoholics[user.id].alco_test() >= 50:
+            alcoholic.recover()
+        if alcoholic.alco_test() >= 50:
             action = random.choice(self.rage_replies)
             await self.check_rage_situations(user, channel, action, rage_to)
         else:
@@ -187,6 +188,7 @@ class Bartender:
 
 
     async def check_rage_situations(self, user, channel, action, rage_to):
+        alcoholic = Alcoholic(user.id)
         if action == self.rage_replies[0]:
             await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
             if bool(random.getrandbits(1)):
@@ -200,7 +202,7 @@ class Bartender:
         elif action == self.rage_replies[6]:
             drink_name = random.choice(list(self.random_drinks.keys()))
             drink = self.random_drinks[drink_name]
-            self.alcoholics[user.id].set_alco(self.alcoholics[user.id].alco_test() + drink[1])
+            alcoholic.set_alco(alcoholic.alco_test() + drink[1])
             await channel.send(f'{user.mention}{action}'.format(drink_name, rage_to.mention))
         else:
             await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
@@ -208,12 +210,13 @@ class Bartender:
 
     # наливает напиток юзеру (меняет степень опьянения; даёт таймаут, если степень опьянения >=100; выдаёт реплику)
     async def give_drink(self, user, channel, drink_name=None, gift_giver=None, give_compliment=None):
-        if self.alcoholics[user.id].alco_test() == 0:
-            self.alcoholics[user.id].reset()
-        elif not self.alcoholics[user.id].hangover:
-            self.alcoholics[user.id].recover()
+        alcoholic = Alcoholic(user.id)
+        if alcoholic.alco_test() == 0:
+            alcoholic.reset()
+        elif not alcoholic.hangover:
+            alcoholic.recover()
 
-        minutes_left = self.alcoholics[user.id].timeout_mins_left()
+        minutes_left = alcoholic.timeout_mins_left()
         if minutes_left > 0:  # таймаут уже есть
             if gift_giver:
                 await channel.send(f'{gift_giver.mention}, не трогай {user.mention}, {Utility.gender(user, "ему", "ей")} бы проспаться.' +\
@@ -221,8 +224,8 @@ class Bartender:
             else:
                 await channel.send(f'{user.mention}, тебе бы проспаться. {Utility.emote("Pepechill")} Приходи через {minutes_left} {Utility.minutes(minutes_left)}.')
             return
-        elif self.alcoholics[user.id].hangover:  # таймаут был, но прошёл
-            self.alcoholics[user.id].set_alco(random.randrange(30, 70))
+        elif alcoholic.hangover:  # таймаут был, но прошёл
+            alcoholic.set_alco(random.randrange(30, 70))
 
         if not drink_name:
             if discord.utils.get(Constants.GUILD.roles, name='Хугарднутый') in user.roles and self.special and gift_giver is None:
@@ -240,7 +243,7 @@ class Bartender:
             
         success = random.randrange(50) != 0  # шанс на успех команды
         if success:
-            self.alcoholics[user.id].set_alco(self.alcoholics[user.id].alco_test() + drink[1])
+            alcoholic.set_alco(alcoholic.alco_test() + drink[1])
 
         if gift_giver:
             await channel.send(phrase_for_gifted_drink(success, drink, gift_giver, user))
