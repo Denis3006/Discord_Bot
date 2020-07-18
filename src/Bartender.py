@@ -162,7 +162,7 @@ class Bartender:
             alcoholic.recover()
         if alcoholic.timeout_mins_left == 0 and alcoholic.hangover is True:
             # тайамут из-за полного опьянения был, но прошёл. обнуляем значения, и поднимаем процент оставшегося опьянения до рандомного значения
-            mins_after_timeout = (datetime.datetime.now() - alcoholic.timeout_untill()).total_seconds() // 60
+            mins_after_timeout = (datetime.datetime.now() - alcoholic.hangover_untill).total_seconds() // 60
             recovered_after_timeout = mins_after_timeout * alcoholic.recovery_rate
             alcoholic.set_alco(random.randrange(30, 70) - recovered_after_timeout)
         alco_test = alcoholic.alco_test()
@@ -229,7 +229,9 @@ class Bartender:
                 await channel.send(f'{user.mention}, тебе бы проспаться. {Utility.emote("Pepechill")} Приходи через {minutes_left} {Utility.minutes(minutes_left)}.')
             return
         elif alcoholic.hangover:  # таймаут был, но прошёл
-            alcoholic.set_alco(random.randrange(30, 70))
+            mins_after_timeout = (datetime.datetime.now() - alcoholic.hangover_untill).total_seconds() // 60
+            recovered_after_timeout = mins_after_timeout * alcoholic.recovery_rate
+            alcoholic.set_alco(random.randrange(30, 70) - recovered_after_timeout)
 
         if not drink_name:
             if discord.utils.get(
