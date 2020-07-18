@@ -36,14 +36,12 @@ class Alcoholic:
     def alco_test(self) -> int:
         if not self.hangover:
             self.recover()
-            self.data_changed = True
         return clip(self.alco_percent - self.recovered_percent, 0, 100)
 
     # обновляет значение восстановления опьянения со временем
     def recover(self):
         self.recovered_percent = max(
             0, int((datetime.datetime.now() - self.last_drink_time).total_seconds() // 60 * self.recovery_rate))
-        self.data_changed = True
 
     # обнуляет степень опьянения и восстановление
     def reset(self):
