@@ -7,9 +7,9 @@ import src.Constants as Constants
 import src.Utility as Utility
 from src.Alcoholic import Alcoholic
 
+
 class Bartender:
     def __init__(self):
-        self.alcoholics = dict()  # словарь юзеров в баре
         self.special = False  # флаг для специальных ивентов (пока что один)
         self.random_drinks = {  # словарь напитков в баре формата "название: (реплика, алко)", где алко - степень опьянения от напитка
             'спирт':                (f', порция чистого спирта {Utility.emote("Pepega")} \nНадеюсь ты не помрёшь {Utility.emote("LULW")}', 50),
@@ -54,56 +54,60 @@ class Bartender:
             'баунти мартини':       (f', Ваш баунти мартини! По сути, клубнично-кокосовый милкшейк, вкусно и легко', 9),
             'греческая смоковница': (f', Ваша смоковница с инжиром! Выпиваешь шот, затем закусываешь инжиром - ничего сложного!', 19),
             'россини':              (f', Ваш россини! Легкий коктейль из клубничной пюрешки и просекко {Utility.emote("strawberry")}', 12)
-            }
+        }
 
         self.drinks = {
-            'хугарден' :  (f', Ваш тёплый Хугарден {Utility.emote("pepeClown")}', 5),
-            'вода'     :  (f', Ваша вода {Utility.emote("cup_with_straw")}', -10),
+            'хугарден':  (f', Ваш тёплый Хугарден {Utility.emote("pepeClown")}', 5),
+            'вода':  (f', Ваша вода {Utility.emote("cup_with_straw")}', -10),
             'энергетик':  (f', Ваш энергетик! {Utility.emote("PepeKMS")} \nНе спать! {Utility.emote("pepeRage")}', 0)
-            }
+        }
 
         self.coffee = {
-            'американо'              : (f', Ваш американо {Utility.emote("coffee")}', 0),
-            'капучино'               : (f', Ваш капучино {Utility.emote("coffee")}', 0),
-            'латте'                  : (f', Ваш латте {Utility.emote("coffee")}', 0),
-            'арахисовый латте'       : (f', Ваш арахисовый латте {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'моккачино'              : (f', Ваш моккачино {Utility.emote("coffee")}', 0),
-            'флет уайт'              : (f', Ваш флет уайт {Utility.emote("coffee")}', 0),
-            'маккиато'               : (f', Ваш маккиато {Utility.emote("coffee")}', 0),
-            'дынный раф'             : (f', Ваш дынный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'цитрусовый раф'         : (f', Ваш цитрусовый  раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'шоколадный раф'         : (f', Ваш шоколадный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'ежевичный раф'          : (f', Ваш ежевичный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'грушевый раф'           : (f', Ваш грушевый раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'карамель маккиато'      : (f', Ваш сладенький карамель маккиато {Utility.emote("PepeHappy")}', 0),
-            'просто кофе'            : (f', Ваш самый обчыный кофе {Utility.emote("4Head")}', 0),
-            'эспрессо'               : (f', Ваше экспрессо {Utility.emote("3Head")}', 0),
-            'колд брю'               : (f', Ваш прохладительный колд брю {Utility.emote("ice_cube")}', 0),
-            'карамельный фраппучино' : (f', Ваш карамельный фраппучино со взбитыми сливками {Utility.emote("PepeHappy")}', 0),
-            'эспрессо фраппучино'    : (f', Ваш эспрессо фраппучино: молоко с молотым льдом и шотом эспрессо {Utility.emote("MHM")}', 0),
-            'мокка фраппучино'       : (f', Ваш мокка фраппучино {Utility.emote("coffee")}', 0),
-            'ванильный фраппучино'   : (f', Ваш ванильный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'шоколадный фраппучино'  : (f', Ваш сладенький шоколадный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
-            'руссиано'               : (f', Ваш патриотический руссиано {Utility.emote("4Head")}', 0)
-            }
+            'американо': (f', Ваш американо {Utility.emote("coffee")}', 0),
+            'капучино': (f', Ваш капучино {Utility.emote("coffee")}', 0),
+            'латте': (f', Ваш латте {Utility.emote("coffee")}', 0),
+            'арахисовый латте': (f', Ваш арахисовый латте {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'моккачино': (f', Ваш моккачино {Utility.emote("coffee")}', 0),
+            'флет уайт': (f', Ваш флет уайт {Utility.emote("coffee")}', 0),
+            'маккиато': (f', Ваш маккиато {Utility.emote("coffee")}', 0),
+            'дынный раф': (f', Ваш дынный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'цитрусовый раф': (f', Ваш цитрусовый  раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'шоколадный раф': (f', Ваш шоколадный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'ежевичный раф': (f', Ваш ежевичный раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'грушевый раф': (f', Ваш грушевый раф {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'карамель маккиато': (f', Ваш сладенький карамель маккиато {Utility.emote("PepeHappy")}', 0),
+            'просто кофе': (f', Ваш самый обчыный кофе {Utility.emote("4Head")}', 0),
+            'эспрессо': (f', Ваше экспрессо {Utility.emote("3Head")}', 0),
+            'колд брю': (f', Ваш прохладительный колд брю {Utility.emote("ice_cube")}', 0),
+            'карамельный фраппучино': (f', Ваш карамельный фраппучино со взбитыми сливками {Utility.emote("PepeHappy")}', 0),
+            'эспрессо фраппучино': (f', Ваш эспрессо фраппучино: молоко с молотым льдом и шотом эспрессо {Utility.emote("MHM")}', 0),
+            'мокка фраппучино': (f', Ваш мокка фраппучино {Utility.emote("coffee")}', 0),
+            'ванильный фраппучино': (f', Ваш ванильный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'шоколадный фраппучино': (f', Ваш сладенький шоколадный фраппучино {Utility.emote("PepeHappy")} {Utility.emote("coffee")}', 0),
+            'руссиано': (f', Ваш патриотический руссиано {Utility.emote("4Head")}', 0)
+        }
 
         self.tea = {
-            'чёрный чай'   : (f', Ваш чёрный чай {Utility.emote("tea")}', 0),
-            'розовый чай'  : (f', Ваш розовый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
-            'зелёный чай'  : (f', Ваш зелёный чай {Utility.emote("tea")}', 0),
-            'белый чай'    : (f', Ваш белый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
-            'пуэр'         : (f', Ваш пуэр {Utility.emote("tea")}', 0),
-            'дарджилинг'   : (f', Ваш дар... даржилинх {Utility.emote("3Head")}', 0),
-            'красный чай'  : (f', Ваш красный чай {Utility.emote("tea")}', 0),
-            'мате'         : (f', Ваш мате {Utility.emote("mate")}', 0)
-            }
+            'чёрный чай': (f', Ваш чёрный чай {Utility.emote("tea")}', 0),
+            'розовый чай': (f', Ваш розовый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
+            'зелёный чай': (f', Ваш зелёный чай {Utility.emote("tea")}', 0),
+            'белый чай': (f', Ваш белый чай {Utility.emote("PepeHappy")} {Utility.emote("tea")}', 0),
+            'пуэр': (f', Ваш пуэр {Utility.emote("tea")}', 0),
+            'дарджилинг': (f', Ваш дар... даржилинх {Utility.emote("3Head")}', 0),
+            'красный чай': (f', Ваш красный чай {Utility.emote("tea")}', 0),
+            'мате': (f', Ваш мате {Utility.emote("mate")}', 0)
+        }
 
         self.compliments = [  # список комплиментов бармена в формате "(реплика для парней, реплика для девушек)"
-            (f', Вы такой красивый сегодня! {Utility.emote("pepehype")}', f', Вы такая красивая сегодня! {Utility.emote("peepoPANTIES")}'),
-            (f', выглядишь потрясающе! {Utility.emote("gaygasm")}', f', выглядишь потрясающе! {Utility.emote("PepeHappy")}'),
-            (f', отличный прикид! {Utility.emote("pepeOK")}', f', какие у тебя красивые... глаза! {Utility.emote("monkaS")}'),
-            (f', Вам привет от обаятельной девушки за дальним столиком {Utility.emote("pepehype")}', f', Вам привет от обаятельного парня за дальним столиком {Utility.emote("pepehype")}')
-            ]
+            (f', Вы такой красивый сегодня! {Utility.emote("pepehype")}',
+             f', Вы такая красивая сегодня! {Utility.emote("peepoPANTIES")}'),
+            (f', выглядишь потрясающе! {Utility.emote("gaygasm")}',
+             f', выглядишь потрясающе! {Utility.emote("PepeHappy")}'),
+            (f', отличный прикид! {Utility.emote("pepeOK")}',
+             f', какие у тебя красивые... глаза! {Utility.emote("monkaS")}'),
+            (f', Вам привет от обаятельной девушки за дальним столиком {Utility.emote("pepehype")}',
+             f', Вам привет от обаятельного парня за дальним столиком {Utility.emote("pepehype")}')
+        ]
 
         self.thanks_replies = [  # список ответов на благодарности
             f', не за что! {Utility.emote("pepeOK")}',
@@ -119,9 +123,9 @@ class Bartender:
             f', всегда рад стараться! {Utility.emote("pepeOK")}',
             f', это просто моя работа {Utility.emote("MHM")}',
             f', пожалуйста, конечно, но вы кто? {Utility.emote("Bored")}'
-            ]
+        ]
 
-        self.rage_replies = [ # список действий, которые может сделать игрок, когда буянит
+        self.rage_replies = [  # список действий, которые может сделать игрок, когда буянит
             ' берет стакан и кидает его в случайного посетителя. Он летит в {}.',
             ' разбрасывает окурки из пепельницы. Окурок попадает на одежду {}',
             ' затевает драку с {} и побеждает',
@@ -144,117 +148,106 @@ class Bartender:
             'Стакан попадает в руку. Держать напитки становится труднее.',
             'Стакан попадает в живот. Пивное пузо {} все защитило.',
             'Стакан попадает в ногу. Пора делать деревянную ногу и пить грог.',
-            'Стакан попадает в сосочек.'
+            'Стакан попадает в сосочек. {} {}'
         ]
 
 
-    async def reply_thanks(self, user, channel):
+    async def reply_thanks(self, user: discord.Member, channel: discord.TextChannel):
         await channel.send(f'{user.mention}{random.choice(self.thanks_replies)}')
 
 
-    async def check_alco(self, user, channel):
-        if self.alcoholics[user.id].alco_test() == 0:
-            self.alcoholics[user.id].reset()
-        elif not self.alcoholics[user.id].hangover: # обновляет значение восстановления, если юзер не полностью пьян
-            self.alcoholics[user.id].recover()
-        if self.alcoholics[user.id].timeout_mins_left == 0 and self.alcoholics[user.id].hangover is True:  
+    async def check_alco(self, user: discord.Member, channel: discord.TextChannel):
+        alcoholic = Alcoholic(user.id)
+        if alcoholic.timeout_mins_left == 0 and alcoholic.hangover is True:
             # тайамут из-за полного опьянения был, но прошёл. обнуляем значения, и поднимаем процент оставшегося опьянения до рандомного значения
-            self.alcoholics[user.id].set_alco(random.randrange(30, 70))
-        alco_test = self.alcoholics[user.id].alco_test()
+            mins_after_timeout = (datetime.datetime.now() - alcoholic.hangover_untill).total_seconds() // 60
+            recovered_after_timeout = mins_after_timeout * alcoholic.recovery_rate
+            alcoholic.set_alco(random.randrange(30, 70) - recovered_after_timeout)
+        alco_test = alcoholic.alco_test()
+        if alco_test == 0:
+            alcoholic.reset()
         if alco_test == 100:
-            await channel.send(random.choice(\
-                [f'{user.mention}, выглядишь на все :100: {Utility.emote("MonkaChrist")}', \
-                f'{user.mention}, ты {Utility.gender(user, "пьян", "пьяна")} на 100% {Utility.emote("Pepechill")} \nИди проспись! {Utility.emote("MHM")}']))
+            await channel.send(random.choice(
+                [f'{user.mention}, выглядишь на все :100: {Utility.emote("MonkaChrist")}',
+                 f'{user.mention}, ты {Utility.gender(user, "пьян", "пьяна")} на 100% {Utility.emote("Pepechill")} \nИди проспись! {Utility.emote("MHM")}']))
         else:
-            await channel.send(f'{user.mention}, ты {Utility.gender(user, "пьян", "пьяна")} на {self.alcoholics[user.id].alco_test()}% {Utility.emote("Pepechill")}')
-
+            await channel.send(f'{user.mention}, ты {Utility.gender(user, "пьян", "пьяна")} на {alcoholic.alco_test()}% {Utility.emote("Pepechill")}')
 
     # Юзер начинает буянить в баре
-    async def rage(self, user, channel, rage_to):
+    async def rage(self, user: discord.Member, channel: discord.TextChannel, rage_to: discord.Member):
+        alcoholic = Alcoholic(user.id)
         if rage_to.id == Constants.ZAKHOZHKA_ID:
             await channel.send(f"{rage_to.mention} получает ладошкой по лбу от {user.mention}")
-            return
-        if self.alcoholics[user.id].timeout_mins_left() > 0:
+        elif alcoholic.timeout_mins_left() > 0:
             await channel.send(f"{user.mention}, ты слишком пьян для этого, проспись!")
-            return
-        else:
-            self.alcoholics[user.id].recover()
-        if self.alcoholics[user.id].alco_test() >= 50:
+        elif alcoholic.alco_test() >= 50:
             action = random.choice(self.rage_replies)
             await self.check_rage_situations(user, channel, action, rage_to)
         else:
             await channel.send(f'Вы же не настолько пьяны, чтобы делать это? {Utility.emote("monkaSpolice")}')
 
 
-    async def check_rage_situations(self, user, channel, action, rage_to):
+    async def check_rage_situations(self, user: discord.Member, channel: discord.TextChannel, action: str, rage_to: discord.Member):
         if action == self.rage_replies[0]:
             await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
             if bool(random.getrandbits(1)):
                 throw = random.choice(self.rage_throw_glass)
-                if throw == self.rage_throw_glass[4]:
-                    await channel.send(f'{throw} {rage_to.mention} {Utility.gender(rage_to, "возбудился", "возбудилась")}')
-                else:
-                    await channel.send(f'{throw}'.format(rage_to.mention))
+                await channel.send(throw.format(rage_to.mention, Utility.gender(rage_to, "возбудился", "возбудилась")))
             else:
                 await channel.send(f'Вы промахнулись, стакан вдребезги разбился о стену')
         elif action == self.rage_replies[6]:
+            alcoholic = Alcoholic(user.id)
             drink_name = random.choice(list(self.random_drinks.keys()))
             drink = self.random_drinks[drink_name]
-            self.alcoholics[user.id].set_alco(self.alcoholics[user.id].alco_test() + drink[1])
+            alcoholic.set_alco(alcoholic.alco_test() + drink[1])
             await channel.send(f'{user.mention}{action}'.format(drink_name, rage_to.mention))
         else:
             await channel.send(f'{user.mention}{action}'.format(rage_to.mention))
 
-
     # наливает напиток юзеру (меняет степень опьянения; даёт таймаут, если степень опьянения >=100; выдаёт реплику)
-    async def give_drink(self, user, channel, drink_name=None, gift_giver=None, give_compliment=None):
-        if self.alcoholics[user.id].alco_test() == 0:
-            self.alcoholics[user.id].reset()
-        elif not self.alcoholics[user.id].hangover:
-            self.alcoholics[user.id].recover()
+    async def give_drink(self, user: discord.Member, channel: discord.TextChannel, drink_name: str = None,
+                         gift_giver: discord.Member = None, give_compliment: bool = None):
+        alcoholic = Alcoholic(user.id)
+        if alcoholic.alco_test() == 0:
+            alcoholic.reset()
 
-        minutes_left = self.alcoholics[user.id].timeout_mins_left()
-        if minutes_left > 0:  # таймаут уже есть
+        if (minutes_left := alcoholic.timeout_mins_left() > 0):  # таймаут уже есть
             if gift_giver:
-                await channel.send(f'{gift_giver.mention}, не трогай {user.mention}, {Utility.gender(user, "ему", "ей")} бы проспаться.' +\
-                f' {Utility.emote("Pepechill")} Попробуй угостить через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
+                await channel.send(f'{gift_giver.mention}, не трогай {user.mention}, {Utility.gender(user, "ему", "ей")} бы проспаться.' +
+                                   f' {Utility.emote("Pepechill")} Попробуй угостить через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
             else:
                 await channel.send(f'{user.mention}, тебе бы проспаться. {Utility.emote("Pepechill")} Приходи через {minutes_left} {Utility.minutes(minutes_left)}.')
             return
-        elif self.alcoholics[user.id].hangover:  # таймаут был, но прошёл
-            self.alcoholics[user.id].set_alco(random.randrange(30, 70))
+        elif alcoholic.hangover:  # таймаут был, но прошёл
+            mins_after_timeout = (datetime.datetime.now() - alcoholic.hangover_untill).total_seconds() // 60
+            recovered_after_timeout = mins_after_timeout * alcoholic.recovery_rate
+            alcoholic.set_alco(random.randrange(30, 70) - recovered_after_timeout)
 
         if not drink_name:
-            if discord.utils.get(Constants.GUILD.roles, name='Хугарднутый') in user.roles and self.special and gift_giver is None:
+            if discord.utils.get(
+                    Constants.GUILD.roles, name='Хугарднутый') in user.roles and self.special and gift_giver is None:
                 drink = self.drinks['хугарден']
             else:
                 drink = random.choice(list(self.random_drinks.values()))
         else:
-            drink = self.get_drink(drink_name)
-        if not drink:
-            if gift_giver:
-                await channel.send(f'Простите, {gift_giver.mention}, такого в нашем баре не наливают {Utility.emote("FeelsBanMan")}')
-            else:
-                await channel.send(f'Простите, {user.mention}, такого в нашем баре не наливают {Utility.emote("FeelsBanMan")}')
-            return
-            
-        success = random.randrange(50) != 0  # шанс на успех команды
-        if success:
-            self.alcoholics[user.id].set_alco(self.alcoholics[user.id].alco_test() + drink[1])
+            if not (drink := self.get_drink(drink_name)):
+                reply_to = gift_giver if gift_giver else user
+                await channel.send(f'Простите, {reply_to.mention}, такого в нашем баре не наливают {Utility.emote("FeelsBanMan")}')
+                return
+
+        if (success := random.randrange(50) != 0):
+            alcoholic.set_alco(alcoholic.alco_test() + drink[1])
 
         if gift_giver:
             await channel.send(phrase_for_gifted_drink(success, drink, gift_giver, user))
         else:
             await channel.send(phrase_for_nongifted_drink(success, drink, user))
 
-        if give_compliment is None:
-            give_compliment = (random.randrange(10) == 0)
-        if give_compliment:
-            compliment = self.choose_compliment(user)
-            await channel.send(user.mention + compliment)
+        if (give_compliment := give_compliment if give_compliment is not None else random.randrange(10) == 0):
+            await channel.send(user.mention + self.choose_compliment(user))
 
 
-    def get_drink(self, drink_name: str):
+    def get_drink(self, drink_name: str) -> tuple:
         if drink_name == 'чай':
             return random.choice(list(self.tea.values()))
         elif drink_name == 'кофе':
@@ -273,9 +266,8 @@ class Bartender:
             return self.coffee[drink_name.lower()]
         else:
             return None
-    
 
-    def choose_compliment(self, user):
+    def choose_compliment(self, user: discord.Member) -> str:
         compliment_nr = random.randrange(len(self.compliments))
         if Constants.FEMALE_ROLE in user.roles:
             return self.compliments[compliment_nr][1]
@@ -286,21 +278,23 @@ class Bartender:
                 return self.compliments[compliment_nr][0]
 
 
-def phrase_for_gifted_drink(success, drink, gift_giver, gift_reciever):
+def phrase_for_gifted_drink(success: bool, drink: tuple, giver: discord.Member, reciever: discord.Member) -> str:
     if not success:
         return random.choice(
-            [f'Ой, я кажется разлил напиток от {gift_giver.mention} для {gift_reciever.mention}. Прошу прощения {Utility.emote("FeelsBanMan")}',
-             f'{gift_reciever.mention}, Вас ' + Utility.gender(gift_giver, 'хотел угостить', 'хотела угостить') + f' {gift_giver.mention}! {Utility.emote("PepeHappy")}' +
-            f'\nПростите, я задумался и выпил Ваш напиток. Было вкусно {Utility.emote("pepeClown")}'])
+            [f'Ой, я кажется разлил напиток от {giver.mention} для {reciever.mention}. Прошу прощения {Utility.emote("FeelsBanMan")}',
+             f'{reciever.mention}, Вас ' + Utility.gender(giver, 'хотел угостить', 'хотела угостить') +
+             f' {giver.mention}! {Utility.emote("PepeHappy")}' +
+             f'\nПростите, я задумался и выпил Ваш напиток. Было вкусно {Utility.emote("pepeClown")}'])
     else:
-        return f'{gift_reciever.mention}, Вас ' + Utility.gender(gift_giver, 'угостил', 'угостила') + f' {gift_giver.mention}! {Utility.emote("PepeHappy")} Держите{drink[0]}'
+        return f'{reciever.mention}, Вас {Utility.gender(giver, "угостил", "угостила")}' +\
+               f' {giver.mention}! {Utility.emote("PepeHappy")} Держите{drink[0]}'
 
 
-def phrase_for_nongifted_drink(success, drink, user):
+def phrase_for_nongifted_drink(success: bool, drink: tuple, user: discord.Member) -> str:
     if not success:
         return random.choice(
             [f'Ой, я кажется разлил напиток для {user.mention}. Прошу прощения {Utility.emote("FeelsBadMan")}',
-            f'{user.mention}, простите, я заработался и не заметил, как выпил Ваш напиток {Utility.emote("monkaS")}'])
+             f'{user.mention}, простите, я заработался и не заметил, как выпил Ваш напиток {Utility.emote("monkaS")}'])
     elif random.randrange(10) == 0:
         return f'На этот раз за счёт заведения, {user.mention}{drink[0]}'
     else:
