@@ -4,15 +4,12 @@ from urllib.parse import urlparse
 import psycopg2
 import psycopg2.extras
 
-import src.Constants as Constants
+from src.Constants import DATABASE_URL
 
 DB_CONNECTION = None
 
-# TODO: Move Constants.DB_CONNECTION here
-
-
 def connect_to_psql():
-    connection_data = urlparse(Constants.DATABASE_URL)
+    connection_data = urlparse(DATABASE_URL)
     connection = psycopg2.connect(
         dbname=connection_data.path[1:], user=connection_data.username,
         password=connection_data.password, host=connection_data.hostname)
