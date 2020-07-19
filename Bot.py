@@ -289,7 +289,6 @@ async def on_message(message: discord.Message):
                     [f'I\'d be right happy to {Utility.emote("gachiS")}',
                      f'Ass we can {Utility.emote("gachiS")}',
                      f'Without further interruption let\'s celebrate and suck some dick {Utility.emote("gachiS")}']))
-                await message.channel.send(f'DEBUG Msg: Added {link}')
             else:
                 await message.channel.send(f'Трек уже есть в гачи-автомате {Utility.emote("gachiS")}')
         else:
@@ -319,7 +318,6 @@ async def on_message(message: discord.Message):
                     [f'I\'d be right happy to {Utility.emote("gachiS")}',
                      f'Ass we can {Utility.emote("gachiS")}',
                      f'Without further interruption let\'s celebrate and suck some dick {Utility.emote("gachiS")}']))
-                await message.channel.send(f'DEBUG Msg: Removed {link}')
             else:
                 await message.channel.send(f'Трек не был найден в гачи-автомате {Utility.emote("gachiS")}')
         else:
