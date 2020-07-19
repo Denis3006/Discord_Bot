@@ -4,7 +4,6 @@ import random
 import traceback
 
 import discord
-import validators
 
 import src.Constants as Constants
 import src.psql as psql
@@ -29,7 +28,7 @@ async def on_ready():
     Constants.FEMALE_ROLE = discord.utils.get(Constants.GUILD.roles, name='Шоу-GIRLS')
     Constants.MAIN_CHANNEL = discord.utils.get(Constants.GUILD.channels, name='флудилка')
     Constants.MUSIC_CHANNEL = discord.utils.get(Constants.GUILD.channels, name='музыкальный-автомат')
-    psql.DB_CONNECTION = psql.connect_to_psql()
+    psql.DB_CONNECTION = psql.DBConnection()
 
     global bartender
     bartender = Bartender()
@@ -278,12 +277,19 @@ async def on_message(message: discord.Message):
             link = str(message.content.split()[2][1:-1])
         else:
             link = message.content.split()[2]
-        if validators.url(link):  # Проверка ссылки на подходящий формат. Не проверяет на действительность.
+        if Utility.is_yt_url(link):  # Проверка ссылки на подходящий формат. Не проверяет на действительность.
+            if Utility.yt_url_is_long(link):
+                try:
+                    link = Utility.shorten_yt_url(link)
+                except:
+                    await message.channel.send(f'{message.author.mention}, таких треков Dungeon Master не знает')
+                    return
             if psql.add_gachi(link):
                 await message.channel.send(random.choice(
                     [f'I\'d be right happy to {Utility.emote("gachiS")}',
                      f'Ass we can {Utility.emote("gachiS")}',
                      f'Without further interruption let\'s celebrate and suck some dick {Utility.emote("gachiS")}']))
+                await message.channel.send(f'DEBUG Msg: Added {link}')
             else:
                 await message.channel.send(f'Трек уже есть в гачи-автомате {Utility.emote("gachiS")}')
         else:
@@ -301,12 +307,19 @@ async def on_message(message: discord.Message):
             link = str(message.content.split()[2][1:-1])
         else:
             link = message.content.split()[2]
-        if validators.url(link):  # Проверка ссылки на подходящий формат. Не проверяет на действительность.
+        if Utility.is_yt_url(link):  # Проверка ссылки на подходящий формат. Не проверяет на действительность.
+            if Utility.yt_url_is_long(link):
+                try:
+                    link = Utility.shorten_yt_url(link)
+                except:
+                    await message.channel.send(f'{message.author.mention}, таких треков Dungeon Master не знает')
+                    return
             if psql.remove_gachi(link):
                 await message.channel.send(random.choice(
                     [f'I\'d be right happy to {Utility.emote("gachiS")}',
                      f'Ass we can {Utility.emote("gachiS")}',
                      f'Without further interruption let\'s celebrate and suck some dick {Utility.emote("gachiS")}']))
+                await message.channel.send(f'DEBUG Msg: Removed {link}')
             else:
                 await message.channel.send(f'Трек не был найден в гачи-автомате {Utility.emote("gachiS")}')
         else:

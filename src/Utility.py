@@ -79,3 +79,19 @@ def get_available_users(users_list: list, banned_users: list, check_durka: bool 
         def is_available(u: discord.Member):
             return u.status is not discord.Status.offline and u not in banned_users
     return [u for u in users_list if is_available(u)]
+
+
+def is_yt_url(url: str) -> bool:
+    return 'https://www.youtube.com' in url or 'https://youtu.be/' in url
+
+
+def yt_url_is_long(url: str) -> bool:
+    return 'https://www.youtube.com' in url
+
+
+def shorten_yt_url(long_url: str) -> str:
+    watch_id = long_url.replace('https://www.youtube.com/watch?v=', '')[0:11]
+    if watch_id == long_url[0:11]:
+        raise Exception('Wrong URL Format')
+    return f'https://youtu.be/{watch_id}'
+
