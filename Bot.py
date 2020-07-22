@@ -150,7 +150,7 @@ async def on_message(message: discord.Message):
             await message.channel.send(f'{message.author.mention}, кого угощать собрались? {Utility.emote("CoolStoryBob")}')
             return
         users = []
-        drink = ' '.join(message.content.split()[2:]) if len(message.content.split()) > 2 else None
+        drink = ' '.join(message.content.split()[2:]).lower() if len(message.content.split()) > 2 else None
         if message.mention_everyone:
             if Utility.has_permissions(message.author):
                 users = Utility.get_available_users(Constants.GUILD.members, [message.author, Constants.BOT])
