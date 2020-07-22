@@ -50,7 +50,7 @@ def upload_alcoholic_data(id: int, data: dict):
 
 
 def get_all_gachi_url() -> list:
-    cur = DB_CONNECTION.cursor()
+    cur = DB_CONNECTION.connection.cursor()
     cur.execute("SELECT url FROM gachi")
     gachi = cur.fetchall()
     cur.close()
@@ -58,7 +58,7 @@ def get_all_gachi_url() -> list:
 
 
 def get_random_gachi_url() -> str:
-    cur = DB_CONNECTION.cursor()
+    cur = DB_CONNECTION.connection.cursor()
     cur.execute("SELECT url FROM gachi OFFSET floor(random() * (SELECT COUNT(*) FROM gachi)) LIMIT 1")
     return cur.fetchone()[0]
 
