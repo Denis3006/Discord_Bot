@@ -211,7 +211,7 @@ class Bartender:
         if alcoholic.alco_test() == 0:
             alcoholic.reset()
 
-        if (minutes_left := alcoholic.timeout_mins_left() > 0):  # таймаут уже есть
+        if (minutes_left := alcoholic.timeout_mins_left()) > 0:  # таймаут уже есть
             if gift_giver:
                 await channel.send(f'{gift_giver.mention}, не трогай {user.mention}, {Utility.gender(user, "ему", "ей")} бы проспаться.' +
                                    f' {Utility.emote("Pepechill")} Попробуй угостить через {str(minutes_left)} {Utility.minutes(minutes_left)}.')
