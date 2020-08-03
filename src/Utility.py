@@ -82,7 +82,7 @@ def get_available_users(users_list: list, banned_users: list, check_durka: bool 
 
 
 def is_yt_url(url: str) -> bool:
-    return 'https://www.youtube.com' in url or 'https://youtu.be/' in url
+    return 'https://www.youtube.com' in url or 'https://youtube.com' in url or 'https://youtu.be/' in url or 'https://m.youtube.com' in url
 
 
 def yt_url_is_long(url: str) -> bool:
@@ -90,8 +90,12 @@ def yt_url_is_long(url: str) -> bool:
 
 
 def shorten_yt_url(long_url: str) -> str:
-    watch_id = long_url.replace('https://www.youtube.com/watch?v=', '')[0:11]
+    if 'https://www.youtube.com' in long_url:
+        watch_id = long_url.replace('https://www.youtube.com/watch?v=', '')[0:11]
+    elif 'https://youtube.com' in long_url:
+        watch_id = long_url.replace('https://youtube.com/watch?v=', '')[0:11]
+    elif 'https://m.youtube.com' in long_url:
+        watch_id = long_url.replace('https://m.youtube.com/watch?v=', '')[0:11]
     if watch_id == long_url[0:11]:
         raise Exception('Wrong URL Format')
     return f'https://youtu.be/{watch_id}'
-

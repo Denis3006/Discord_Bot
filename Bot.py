@@ -223,7 +223,7 @@ async def on_message(message: discord.Message):
                 else:
                     await message.channel.send(f'{message.author.mention} дал {user.mention} анальгина, и {Utility.gender(user, "тот протрезвел.", "та протрезвела.")}')
             else:  # админских прав нет
-                if (minutes_left := alcoholic.timeout_mins_left() > 0):
+                if (minutes_left := alcoholic.timeout_mins_left()) > 0:
                     if user is message.author:
                         await message.channel.send(f'{user.mention}, тебе поможет только сон. {Utility.emote("Bored")} Приходи через {minutes_left} {Utility.minutes(minutes_left)}.')
                     else:
@@ -346,7 +346,7 @@ async def on_message(message: discord.Message):
             await message.channel.send(f'{message.author.mention}, а может мы лучше Вас заберём? {Utility.emote("durka")}')
             return
         alcoholic = Alcoholic(user.id)
-        if (minutes_left := alcoholic.durka_mins_left() > 0):  # юзер уже в дурке
+        if (minutes_left := alcoholic.durka_mins_left()) > 0:  # юзер уже в дурке
             if user is message.author:
                 await message.channel.send(f'{message.author.mention}, куда {Utility.gender(message.author, "собрался?", "собралась?")}' +
                                            f' {Utility.emote("durka")} \nТебе сидеть в дурке ещё {minutes_left} {Utility.minutes(minutes_left)}!')
