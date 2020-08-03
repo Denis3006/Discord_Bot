@@ -86,7 +86,7 @@ def is_yt_url(url: str) -> bool:
 
 
 def yt_url_is_long(url: str) -> bool:
-    return 'https://www.youtube.com' in url
+    return 'https://www.youtube.com' in url or 'https://youtube.com' in url or 'https://m.youtube.com' in url
 
 
 def shorten_yt_url(long_url: str) -> str:
