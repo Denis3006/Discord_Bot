@@ -178,8 +178,17 @@ async def on_message(message: discord.Message):
                         return
                 else:
                     if (user := Utility.get_user_from_mention(message.content.split()[1])):
-                        await gift_drink_to_user(message.author, user, message.channel, drink, None)
-                        return
+                        if user.id == Constants.COOKIE_ID and drink == 'пиво':
+                            await message.channel.send(f'{user.mention}, тебя {Utility.gender(message.author, "угостил", "угостила")} {message.author.mention}. Держи своё холодное пиво и горячие гренки. Кушай, кушай! {Utility.emote("beer")} {Utility.emote("MHM")}')
+                            alcoholic = Alcoholic(user.id)
+                            if alcoholic.alco_test() <= 50:
+                                alcoholic.set_alco(69)
+                            else:
+                                alcoholic.set_alco(alcoholic.alco_test() + 5)
+                            return
+                        else:
+                            await gift_drink_to_user(message.author, user, message.channel, drink, None)
+                            return
                     elif message.content.split()[1] == Utility.emote('YROD'):
                         user = discord.utils.get(Constants.GUILD.members, id=Constants.HACKERMAN_ID)
                         await gift_drink_to_user(message.author, user, message.channel, drink, False)
@@ -403,7 +412,7 @@ async def on_message(message: discord.Message):
                     await message.channel.send(
                         f'Вы решили вызвать целый клан на бой, но все из клана "{role.mention}" смеются вам в лицо')
                 else:
-                    await message.channel.send(f'Вы не находите {message.content.split()[1]} и бьете руками воздух!')     
+                    await message.channel.send(f'Вы не находите {message.content.split()[1]} и бьете руками воздух!')
         else:
             members = Utility.get_available_users(message.guild.members, [message.author, Constants.BOT], True)
             await bartender.rage(message.author, message.channel, random.choice(members))
