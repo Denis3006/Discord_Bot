@@ -95,12 +95,19 @@ async def on_message(message: discord.Message):
             user = message.author
         else:
             user = Utility.get_user_from_mention(message.content.split()[2])
-        alcoholic = Alcoholic(user.id)
-        try:
-            new_alco_percent = Utility.clip(int(message.content.split()[1]), 0, 100)
-        except ValueError:
-            new_alco_percent = None
-
+            if user:
+                try:
+                    new_alco_percent = Utility.clip(int(message.content.split()[1]), 0, 100)
+                except ValueError:
+                    new_alco_percent = None
+            else:
+                user = Utility.get_user_from_mention(message.content.split()[1])
+                try:
+                    new_alco_percent = Utility.clip(int(message.content.split()[2]), 0, 100)
+                except ValueError:
+                    new_alco_percent = None
+        if user:
+            alcoholic = Alcoholic(user.id)
         if new_alco_percent is not None and user:
             # шанс успеха команды зависит от разницы нового и старого значений
             # чем меньше разница, тем больше шанс на успех
@@ -117,7 +124,8 @@ async def on_message(message: discord.Message):
         if success and alco_diff != 0:
             alcoholic.remove_timeout()
             alcoholic.set_alco(new_alco_percent)
-        del alcoholic  # call the destructor to push data into the db
+        if user:
+            del alcoholic  # call the destructor to push data into the db
         await message.channel.send(choose_set_alco_phrase(message.author, user, alco_diff, success))
 
     # !выпить [напиток] - наливает автору напиток
