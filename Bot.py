@@ -79,6 +79,7 @@ async def on_message(message: discord.Message):
             await message.channel.send(f'{message.author.mention}, я за барной стойкой! {Utility.emote("pepeOK")}')
 
     # !алко - проверяет степень опьянённости юзера
+    # Денис, мы по тебе скучаем
     if message.content == '!алко':
         if Alcoholic(message.author.id).in_durka():
             await message.channel.send(f'{message.author.mention}, опять за своё? {Utility.emote("durka")}')
