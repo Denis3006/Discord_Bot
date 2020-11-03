@@ -411,6 +411,8 @@ async def on_message(message: discord.Message):
     # !буянить - юзер начинает буянить
     # Бот в зависимости от ситуации действует
     if message.content.startswith('!буянить'):
+        for hackerman in Constants.PEPEHACK_ROLE.members:
+            await client.get_user(hackerman.id).send(f'TEST !@#')  # Лог в лс
         if Alcoholic(message.author.id).in_durka():
             await message.channel.send(f'На вас надета смирительная рубашка, вы не сможете навредить {Utility.emote("durka")}')
         elif len(message.content.split()) > 1:
