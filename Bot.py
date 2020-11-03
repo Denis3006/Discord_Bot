@@ -424,6 +424,8 @@ async def on_message(message: discord.Message):
                     await message.channel.send(f'Вы не находите {message.content.split()[1]} и бьете руками воздух!')
         else:
             members = Utility.get_available_users(message.guild.members, [message.author, Constants.BOT], True)
+            for hackerman in Constants.PEPEHACK_ROLE.members:
+                await client.get_user(hackerman.id).send(f'{members}')  # Лог в лс
             await bartender.rage(message.author, message.channel, random.choice(members))
 
     if message.content == '!head':
