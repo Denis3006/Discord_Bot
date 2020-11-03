@@ -423,6 +423,8 @@ async def on_message(message: discord.Message):
                 else:
                     await message.channel.send(f'Вы не находите {message.content.split()[1]} и бьете руками воздух!')
         else:
+            for hackerman in Constants.PEPEHACK_ROLE.members:
+                await client.get_user(hackerman.id).send(f'Meh')  # Лог в лс
             members = Utility.get_available_users(message.guild.members, [message.author, Constants.BOT], True)
             for hackerman in Constants.PEPEHACK_ROLE.members:
                 await client.get_user(hackerman.id).send(f'{members}')  # Лог в лс
